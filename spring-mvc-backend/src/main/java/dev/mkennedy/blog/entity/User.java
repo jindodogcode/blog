@@ -6,13 +6,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
+import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@Table(name = "Users")
 public class User {
 
     @Id
+    @Column(name = "id")
     private UUID id;
     @NotNull
     @Email
@@ -29,6 +32,10 @@ public class User {
     private LocalDateTime created;
     @Column(name = "last_logged_in", nullable = true)
     private LocalDateTime lastLoggedIn;
+    // @OneToMany(mappedBy = "user_id", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // private List<Post> posts;
+    // @OneToMany(mappedBy = "user_id", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // private List<Reply> replies;
 
     public User() {}
 

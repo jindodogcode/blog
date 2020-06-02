@@ -13,16 +13,13 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "Posts")
-public class Post {
+@Table(name = "Replies")
+public class Reply {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @NotNull
-    @Column(name = "title", nullable = false)
-    private String title;
     @NotNull
     @Column(name = "content", nullable = false)
     private String content;
@@ -31,16 +28,24 @@ public class Post {
     private LocalDateTime created;
     @Column(name = "edited", nullable = true)
     private LocalDateTime edited;
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false, updatable = false)
+    private Post post;
+    @ManyToOne
+    @JoinColumn(name = "reply_id", nullable = true, updatable = false)
+    private Reply reply;
 
-    public Post() {}
+    public Reply() {}
 
-    public Post(String title, String content, User user) {
-        this.title = title;
+    public Reply(String content, User user, Post post) {
         this.content = content;
         this.user = user;
+        this.post = post;
     }
 
     @PrePersist
@@ -54,14 +59,6 @@ public class Post {
 
     public void setId(Long id) {
       this.id = id;
-    }
-
-    public String getTitle() {
-      return title;
-    }
-
-    public void setTitle(String title) {
-      this.title = title;
     }
 
     public String getContent() {
@@ -96,6 +93,22 @@ public class Post {
       this.user = user;
     }
 
+    public Post getPost() {
+      return post;
+    }
+
+    public void setPost(Post post) {
+      this.post = post;
+    }
+
+    public Reply getReply() {
+      return reply;
+    }
+
+    public void setReply(Reply reply) {
+      this.reply = reply;
+    }
+
     @Override
     public int hashCode() {
       final int prime = 31;
@@ -104,7 +117,8 @@ public class Post {
       result = prime * result + ((created == null) ? 0 : created.hashCode());
       result = prime * result + ((edited == null) ? 0 : edited.hashCode());
       result = prime * result + ((id == null) ? 0 : id.hashCode());
-      result = prime * result + ((title == null) ? 0 : title.hashCode());
+      result = prime * result + ((post == null) ? 0 : post.hashCode());
+      result = prime * result + ((reply == null) ? 0 : reply.hashCode());
       result = prime * result + ((user == null) ? 0 : user.hashCode());
       return result;
     }
@@ -117,7 +131,7 @@ public class Post {
         return false;
       if (getClass() != obj.getClass())
         return false;
-      Post other = (Post) obj;
+      Reply other = (Reply) obj;
       if (content == null) {
         if (other.content != null)
           return false;
@@ -138,10 +152,15 @@ public class Post {
           return false;
       } else if (!id.equals(other.id))
         return false;
-      if (title == null) {
-        if (other.title != null)
+      if (post == null) {
+        if (other.post != null)
           return false;
-      } else if (!title.equals(other.title))
+      } else if (!post.equals(other.post))
+        return false;
+      if (reply == null) {
+        if (other.reply != null)
+          return false;
+      } else if (!reply.equals(other.reply))
         return false;
       if (user == null) {
         if (other.user != null)
@@ -153,7 +172,8 @@ public class Post {
 
     @Override
     public String toString() {
-      return "Post [content=" + content + ", created=" + created + ", edited="
-          + edited + ", id=" + id + ", title=" + title + ", user=" + user + "]";
+      return "Reply [content=" + content + ", created=" + created + ", edited="
+          + edited + ", id=" + id + ", post=" + post + ", reply=" + reply
+          + ", user=" + user + "]";
     }
 }
