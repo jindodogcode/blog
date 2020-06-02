@@ -1,17 +1,19 @@
 package dev.mkennedy.blog.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
-import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "Users")
+@Entity(name = "Users")
 public class User {
 
     @Id
@@ -21,6 +23,12 @@ public class User {
     @Email
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+    @NotNull
+    @Column(name = "user_name", nullable = false, unique = true)
+    private String userName;
+    @NotNull
+    @Column(name = "password", nullable = false)
+    private String password;
     @NotNull
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -32,15 +40,19 @@ public class User {
     private LocalDateTime created;
     @Column(name = "last_logged_in", nullable = true)
     private LocalDateTime lastLoggedIn;
-    // @OneToMany(mappedBy = "user_id", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    // private List<Post> posts;
-    // @OneToMany(mappedBy = "user_id", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    // private List<Reply> replies;
 
     public User() {}
 
-    public User(String email, String firstName, String lastName) {
+    public User(
+        String email,
+        String userName,
+        String password,
+        String firstName,
+        String lastName
+    ) {
         this.email = email;
+        this.userName = userName;
+        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -65,6 +77,22 @@ public class User {
 
     public void setEmail(String email) {
       this.email = email;
+    }
+
+    public String getUserName() {
+      return userName;
+    }
+
+    public void setUserName(String userName) {
+      this.userName = userName;
+    }
+
+    public String getPassword() {
+      return password;
+    }
+
+    public void setPassword(String password) {
+      this.password = password;
     }
 
     public String getFirstName() {
@@ -111,6 +139,8 @@ public class User {
       result = prime * result
           + ((lastLoggedIn == null) ? 0 : lastLoggedIn.hashCode());
       result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
+      result = prime * result + ((password == null) ? 0 : password.hashCode());
+      result = prime * result + ((userName == null) ? 0 : userName.hashCode());
       return result;
     }
 
@@ -153,6 +183,16 @@ public class User {
           return false;
       } else if (!lastName.equals(other.lastName))
         return false;
+      if (password == null) {
+        if (other.password != null)
+          return false;
+      } else if (!password.equals(other.password))
+        return false;
+      if (userName == null) {
+        if (other.userName != null)
+          return false;
+      } else if (!userName.equals(other.userName))
+        return false;
       return true;
     }
 
@@ -160,6 +200,7 @@ public class User {
     public String toString() {
       return "User [created=" + created + ", email=" + email + ", firstName="
           + firstName + ", id=" + id + ", lastLoggedIn=" + lastLoggedIn
-          + ", lastName=" + lastName + "]";
+          + ", lastName=" + lastName + ", password=" + password + ", userName="
+          + userName + "]";
     }
 }
