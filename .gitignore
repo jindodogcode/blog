@@ -1,0 +1,6 @@
+### Database files ###
+.data/
+
+### Editors ###
+.vim/
+.metals/

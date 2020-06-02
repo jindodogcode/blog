@@ -1,0 +1,35 @@
+openapi: 3.0.0
+info:
+  title: 'Blog schema'
+  version: '1.0.0'
+  contact: 
+    email: 'michaeljkennedy@protonmail.com'
+servers:
+  - description: 'Main server'
+    url: http://localhost:8080
+tags:
+  - name: users
+    description: 'Operations about users'
+  - name: posts
+    description: 'Operations about blog posts'
+paths:
+  /users: 
+    post:
+      tags:
+        - users
+      summary: Add a new user
+      operationId: addUser
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string

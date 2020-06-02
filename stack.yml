@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: blog_admin
+      POSTGRES_PASSWORD: something
+      POSTGRES_DB: blog
+    volumes:
+      - ./.data:/var/lib/postgresql/data
