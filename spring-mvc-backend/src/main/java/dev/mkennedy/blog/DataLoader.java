@@ -31,7 +31,7 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.info("Initializing users");
 
-        Optional<User> frankieOpt = userRepo.findByUserName("frankie");
+        Optional<User> frankieOpt = userRepo.findByUsername("frankie");
         User frankie = frankieOpt.orElseGet(() -> {
             User f = new User("frankie@frankmail.com", "frankie", "frankie", "Frankie", "Frankerton");
             f = userRepo.save(f);
@@ -39,7 +39,7 @@ public class DataLoader implements CommandLineRunner {
             return f;
         });
 
-        Optional<User> kimOpt = userRepo.findByUserName("kim");
+        Optional<User> kimOpt = userRepo.findByUsername("kim");
         User kim = kimOpt.orElseGet(() -> {
             User k =  new User("kim@kimmail.com", "kim", "kim", "Kim", "Karolyi");
             k = userRepo.save(k);

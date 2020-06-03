@@ -24,8 +24,8 @@ public class User {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
     @NotNull
-    @Column(name = "user_name", nullable = false, unique = true)
-    private String userName;
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
     @NotNull
     @Column(name = "password", nullable = false)
     private String password;
@@ -45,13 +45,13 @@ public class User {
 
     public User(
         String email,
-        String userName,
+        String username,
         String password,
         String firstName,
         String lastName
     ) {
         this.email = email;
-        this.userName = userName;
+        this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -79,12 +79,12 @@ public class User {
       this.email = email;
     }
 
-    public String getUserName() {
-      return userName;
+    public String getUsername() {
+      return username;
     }
 
-    public void setUserName(String userName) {
-      this.userName = userName;
+    public void setUsername(String username) {
+      this.username = username;
     }
 
     public String getPassword() {
@@ -140,7 +140,7 @@ public class User {
           + ((lastLoggedIn == null) ? 0 : lastLoggedIn.hashCode());
       result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
       result = prime * result + ((password == null) ? 0 : password.hashCode());
-      result = prime * result + ((userName == null) ? 0 : userName.hashCode());
+      result = prime * result + ((username == null) ? 0 : username.hashCode());
       return result;
     }
 
@@ -188,10 +188,10 @@ public class User {
           return false;
       } else if (!password.equals(other.password))
         return false;
-      if (userName == null) {
-        if (other.userName != null)
+      if (username == null) {
+        if (other.username != null)
           return false;
-      } else if (!userName.equals(other.userName))
+      } else if (!username.equals(other.username))
         return false;
       return true;
     }
@@ -200,7 +200,7 @@ public class User {
     public String toString() {
       return "User [created=" + created + ", email=" + email + ", firstName="
           + firstName + ", id=" + id + ", lastLoggedIn=" + lastLoggedIn
-          + ", lastName=" + lastName + ", password=" + password + ", userName="
-          + userName + "]";
+          + ", lastName=" + lastName + ", password=" + password + ", username="
+          + username + "]";
     }
 }
