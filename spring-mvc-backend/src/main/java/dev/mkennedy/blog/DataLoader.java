@@ -14,7 +14,6 @@ import dev.mkennedy.blog.entity.UserSecurity;
 import dev.mkennedy.blog.entity.UserSecurity.Role;
 import dev.mkennedy.blog.repository.PostRepository;
 import dev.mkennedy.blog.repository.UserRepository;
-import dev.mkennedy.blog.repository.UserSecurityRepository;
 import dev.mkennedy.blog.service.UserTransactionService;
 
 @Component
@@ -41,10 +40,10 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.info("Initializing users");
 
-        Optional<User> frankieOpt = userRepo.findByUsername("frankie");
-        User frankie = frankieOpt.orElseGet(() -> {
-            UserSecurity s = new UserSecurity("frankie", Role.ROLE_USER);
-            User u = new User("frankie@frankmail.com", "frankie", "Frankie", "Frankerton");
+        Optional<User> dogOpt = userRepo.findByUsername("dog");
+        User dog = dogOpt.orElseGet(() -> {
+            UserSecurity s = new UserSecurity("dogdog", Role.ROLE_USER);
+            User u = new User("dog@dog.com", "dog", "Dog", "Doggerton");
             u = userTransactionService.saveUserAndSecurity(u, s);
             u = userRepo.findById(u.getId()).get();
             s = u.getSecurity();
@@ -54,10 +53,10 @@ public class DataLoader implements CommandLineRunner {
             return u;
         });
 
-        Optional<User> kimOpt = userRepo.findByUsername("kim");
-        User kim = kimOpt.orElseGet(() -> {
-            UserSecurity s = new UserSecurity("kim", Role.ROLE_USER);
-            User u =  new User("kim@kimmail.com", "kim", "Kim", "Karolyi");
+        Optional<User> catOpt = userRepo.findByUsername("cat");
+        User cat = catOpt.orElseGet(() -> {
+            UserSecurity s = new UserSecurity("cat", Role.ROLE_USER);
+            User u =  new User("cat@cat.gov", "cat", "Cat", "De Catsville");
             u = userTransactionService.saveUserAndSecurity(u, s);
             u = userRepo.findById(u.getId()).get();
             s = u.getSecurity();
@@ -70,11 +69,11 @@ public class DataLoader implements CommandLineRunner {
         log.info("Initializing posts");
 
         List<Post> posts = new ArrayList<>();
-        postRepo.findByUser(frankie).forEach(posts::add);
+        postRepo.findByUser(dog).forEach(posts::add);
         if (posts.isEmpty()) {
             Arrays.asList(
-                new Post("I had a great day", "it was really fucking good", frankie),
-                new Post("I like to lick myself", "It's not my fault, my butt just is that great.", frankie)
+                new Post("I had a great day", "it was really good", dog),
+                new Post("I like to lick myself", "It's not my fault, I'm a dog.", dog)
             );
             postRepo.saveAll(posts).forEach(posts::add);
 
@@ -85,6 +84,6 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void logPersist(String itemType, Object item) {
-        log.info(itemType + " created: " + item);
+        log.info(itemType + " created:\n" + item);
     }
 }
