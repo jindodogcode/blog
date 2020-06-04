@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import dev.mkennedy.blog.entity.Post;
 import dev.mkennedy.blog.entity.User;
@@ -21,20 +23,14 @@ public class DataLoader implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DataLoader.class);
 
+    @Autowired
     private UserRepository userRepo;
+    @Autowired
     private UserTransactionService userTransactionService;
+    @Autowired
     private PostRepository postRepo;
-
-    public DataLoader(
-        UserRepository userRepo,
-        UserTransactionService userTransactionService,
-        PostRepository postRepo
-    ) {
-        this.userRepo = userRepo;
-        this.userTransactionService = userTransactionService;
-        this.postRepo = postRepo;
-    }
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -42,9 +38,11 @@ public class DataLoader implements CommandLineRunner {
 
         Optional<User> dogOpt = userRepo.findByUsername("dog");
         User dog = dogOpt.orElseGet(() -> {
-            UserSecurity s = new UserSecurity("dogdog", Role.ROLE_USER);
+            UserSecurity s = new UserSecurity(passwordEncoder.encode("dogdog"), Role.ROLE_USER);
             User u = new User("dog@dog.com", "dog", "Dog", "Doggerton");
             u = userTransactionService.saveUserAndSecurity(u, s);
+
+            // geting user again to make sure the security table is properly linked
             u = userRepo.findById(u.getId()).get();
             s = u.getSecurity();
 
@@ -55,7 +53,7 @@ public class DataLoader implements CommandLineRunner {
 
         Optional<User> catOpt = userRepo.findByUsername("cat");
         User cat = catOpt.orElseGet(() -> {
-            UserSecurity s = new UserSecurity("cat", Role.ROLE_USER);
+            UserSecurity s = new UserSecurity(passwordEncoder.encode("cat"), Role.ROLE_USER);
             User u =  new User("cat@cat.gov", "cat", "Cat", "De Catsville");
             u = userTransactionService.saveUserAndSecurity(u, s);
             u = userRepo.findById(u.getId()).get();
@@ -71,14 +69,11 @@ public class DataLoader implements CommandLineRunner {
         List<Post> posts = new ArrayList<>();
         postRepo.findByUser(dog).forEach(posts::add);
         if (posts.isEmpty()) {
-            Arrays.asList(
+            posts = Arrays.asList(
                 new Post("I had a great day", "it was really good", dog),
                 new Post("I like to lick myself", "It's not my fault, I'm a dog.", dog)
             );
-            postRepo.saveAll(posts).forEach(posts::add);
-
-            log.info("Posts created: ");
-            posts.forEach(System.out::println);
+            postRepo.saveAll(posts).forEach(p -> logPersist("Post", p));
         }
 
     }
