@@ -4,10 +4,15 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity(name = "Users")
 public class User {
@@ -23,9 +28,6 @@ public class User {
     @Column(name = "username", nullable = false, unique = true)
     private String username;
     @NotNull
-    @Column(name = "password", nullable = false)
-    private String password;
-    @NotNull
     @Column(name = "first_name", nullable = false)
     private String firstName;
     @NotNull
@@ -36,19 +38,21 @@ public class User {
     private LocalDateTime created;
     @Column(name = "last_logged_in", nullable = true)
     private LocalDateTime lastLoggedIn;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private UserSecurity security;
 
     public User() {}
 
     public User(
         String email,
         String username,
-        String password,
         String firstName,
         String lastName
     ) {
         this.email = email;
         this.username = username;
-        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -83,14 +87,6 @@ public class User {
       this.username = username;
     }
 
-    public String getPassword() {
-      return password;
-    }
-
-    public void setPassword(String password) {
-      this.password = password;
-    }
-
     public String getFirstName() {
       return firstName;
     }
@@ -123,6 +119,14 @@ public class User {
       this.lastLoggedIn = lastLoggedIn;
     }
 
+    public UserSecurity getSecurity() {
+      return security;
+    }
+
+    public void setSecurity(UserSecurity security) {
+      this.security = security;
+    }
+
     @Override
     public int hashCode() {
       final int prime = 31;
@@ -135,7 +139,7 @@ public class User {
       result = prime * result
           + ((lastLoggedIn == null) ? 0 : lastLoggedIn.hashCode());
       result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
-      result = prime * result + ((password == null) ? 0 : password.hashCode());
+      result = prime * result + ((security == null) ? 0 : security.hashCode());
       result = prime * result + ((username == null) ? 0 : username.hashCode());
       return result;
     }
@@ -179,10 +183,10 @@ public class User {
           return false;
       } else if (!lastName.equals(other.lastName))
         return false;
-      if (password == null) {
-        if (other.password != null)
+      if (security == null) {
+        if (other.security != null)
           return false;
-      } else if (!password.equals(other.password))
+      } else if (!security.equals(other.security))
         return false;
       if (username == null) {
         if (other.username != null)
@@ -196,7 +200,7 @@ public class User {
     public String toString() {
       return "User [created=" + created + ", email=" + email + ", firstName="
           + firstName + ", id=" + id + ", lastLoggedIn=" + lastLoggedIn
-          + ", lastName=" + lastName + ", password=" + password + ", username="
+          + ", lastName=" + lastName + ", username="
           + username + "]";
     }
 }

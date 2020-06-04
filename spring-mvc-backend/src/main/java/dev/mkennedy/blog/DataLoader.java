@@ -10,8 +10,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import dev.mkennedy.blog.entity.Post;
 import dev.mkennedy.blog.entity.User;
+import dev.mkennedy.blog.entity.UserSecurity;
+import dev.mkennedy.blog.entity.UserSecurity.Role;
 import dev.mkennedy.blog.repository.PostRepository;
 import dev.mkennedy.blog.repository.UserRepository;
+import dev.mkennedy.blog.repository.UserSecurityRepository;
+import dev.mkennedy.blog.service.UserTransactionService;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -19,10 +23,16 @@ public class DataLoader implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(DataLoader.class);
 
     private UserRepository userRepo;
+    private UserTransactionService userTransactionService;
     private PostRepository postRepo;
 
-    public DataLoader(UserRepository userRepo, PostRepository postRepo) {
+    public DataLoader(
+        UserRepository userRepo,
+        UserTransactionService userTransactionService,
+        PostRepository postRepo
+    ) {
         this.userRepo = userRepo;
+        this.userTransactionService = userTransactionService;
         this.postRepo = postRepo;
     }
 
@@ -33,18 +43,28 @@ public class DataLoader implements CommandLineRunner {
 
         Optional<User> frankieOpt = userRepo.findByUsername("frankie");
         User frankie = frankieOpt.orElseGet(() -> {
-            User f = new User("frankie@frankmail.com", "frankie", "frankie", "Frankie", "Frankerton");
-            f = userRepo.save(f);
-            logPersist("User", f);
-            return f;
+            UserSecurity s = new UserSecurity("frankie", Role.ROLE_USER);
+            User u = new User("frankie@frankmail.com", "frankie", "Frankie", "Frankerton");
+            u = userTransactionService.saveUserAndSecurity(u, s);
+            u = userRepo.findById(u.getId()).get();
+            s = u.getSecurity();
+
+            logPersist("User", u);
+            logPersist("User Security", s);
+            return u;
         });
 
         Optional<User> kimOpt = userRepo.findByUsername("kim");
         User kim = kimOpt.orElseGet(() -> {
-            User k =  new User("kim@kimmail.com", "kim", "kim", "Kim", "Karolyi");
-            k = userRepo.save(k);
-            logPersist("User", k);
-            return k;
+            UserSecurity s = new UserSecurity("kim", Role.ROLE_USER);
+            User u =  new User("kim@kimmail.com", "kim", "Kim", "Karolyi");
+            u = userTransactionService.saveUserAndSecurity(u, s);
+            u = userRepo.findById(u.getId()).get();
+            s = u.getSecurity();
+
+            logPersist("User", u);
+            logPersist("User Security", s);
+            return u;
         });
 
         log.info("Initializing posts");
