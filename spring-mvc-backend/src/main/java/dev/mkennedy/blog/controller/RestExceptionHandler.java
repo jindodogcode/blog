@@ -1,6 +1,8 @@
 package dev.mkennedy.blog.controller;
 
-import javax.validation.ConstraintViolationException;
+import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,6 +23,8 @@ import dev.mkennedy.blog.model.ApiError;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
@@ -69,8 +73,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(apiError);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    protected ResponseEntity<Object> handleConstrainViolation(ConstraintViolationException ex) {
+    @ExceptionHandler(javax.validation.ConstraintViolationException.class)
+    protected ResponseEntity<Object> handleConstrainViolation(javax.validation.ConstraintViolationException ex) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
         apiError.setMessage("Validation error");
         apiError.addValidationErrors(ex.getConstraintViolations());
@@ -110,6 +114,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         DataIntegrityViolationException ex,
         WebRequest request
     ) {
+        Throwable error = ex;
+        while (error != null) {
+            log.error(error.getClass().getName());
+            error = error.getCause();
+        }
+        log.error(ex.getCause().getClass().getName());
         if (ex.getCause() instanceof ConstraintViolationException) {
             return buildResponseEntity(
                 new ApiError(HttpStatus.CONFLICT,
