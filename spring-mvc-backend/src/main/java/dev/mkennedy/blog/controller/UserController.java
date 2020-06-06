@@ -1,8 +1,10 @@
 package dev.mkennedy.blog.controller;
 
+import dev.mkennedy.blog.entity.Post;
 import dev.mkennedy.blog.entity.User;
 import dev.mkennedy.blog.entity.UserSecurity;
 import dev.mkennedy.blog.entity.UserSecurity.Role;
+import dev.mkennedy.blog.repository.PostRepository;
 import dev.mkennedy.blog.repository.UserRepository;
 import dev.mkennedy.blog.service.UserTransactionService;
 import javax.persistence.EntityNotFoundException;
@@ -23,10 +25,15 @@ public class UserController {
 
     private final UserRepository userRepo;
     private final UserTransactionService userService;
+    private final PostRepository postRepo;
 
-    public UserController(UserRepository userRepo, UserTransactionService userService) {
+    public UserController(
+            UserRepository userRepo,
+            UserTransactionService userService,
+            PostRepository postRepo) {
         this.userRepo = userRepo;
         this.userService = userService;
+        this.postRepo = postRepo;
     }
 
     @PostMapping
@@ -48,6 +55,11 @@ public class UserController {
         User user = userRepo.findByUsername(username).orElseThrow(() -> new EntityNotFoundException());
 
         return user;
+    }
+
+    @GetMapping("/{username}/posts")
+    public Iterable<Post> getUserPosts(@PathVariable("username") String username) {
+        return postRepo.findAllByUsername(username);
     }
 }
 
