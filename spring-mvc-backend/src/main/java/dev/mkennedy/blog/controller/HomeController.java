@@ -1,23 +1,24 @@
 package dev.mkennedy.blog.controller;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import dev.mkennedy.blog.entity.User;
+import dev.mkennedy.blog.repository.UserRepository;
 
-@Controller
-@RequestMapping("/api/v1")
+@RestController
 public class HomeController {
 
-    @GetMapping("/login")
-    public User login(@AuthenticationPrincipal User user) {
-        if (user == null) {
-            System.out.println("null");
-        } else {
-            System.out.println(user);
-        }
+    @Autowired
+    private UserRepository userRepo;
 
-        return user;
+    @GetMapping("/api/v1/login")
+    public User login(Authentication authentication) {
+        Optional<User> userOpt = userRepo.findByUsername(authentication.getName());
+        
+        return userOpt.orElseThrow(() -> new UsernameNotFoundException("No user of that name"));
     }
 }
