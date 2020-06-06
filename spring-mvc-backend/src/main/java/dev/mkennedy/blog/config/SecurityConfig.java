@@ -37,10 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic()
             .and()
             .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "api/v1/users")
-                    .permitAll()
-                .antMatchers("api/v1/**")
-                    .hasAnyRole(Arrays.stream(Role.values()).map(Role::name).toArray(String[]::new))
+                .antMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+                .antMatchers("/api/v1/**").authenticated()
             .and()
             .csrf()
                 .disable();
