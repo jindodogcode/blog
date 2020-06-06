@@ -1,6 +1,7 @@
 package dev.mkennedy.blog.entity;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity(name = "Replies")
 public class Reply {
@@ -29,13 +32,16 @@ public class Reply {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    @JsonIgnore
     private User user;
     @NotNull
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false, updatable = false)
+    @JsonIgnore
     private Post post;
     @ManyToOne
     @JoinColumn(name = "reply_id", nullable = true, updatable = false)
+    @JsonIgnore
     private Reply reply;
 
     public Reply() {}
@@ -49,6 +55,30 @@ public class Reply {
     @PrePersist
     public void prePersist() {
         this.created = LocalDateTime.now();
+    }
+
+    @JsonGetter("user_id")
+    protected UUID getUserId() {
+        if (user != null)
+            return user.getId();
+
+        return null;
+    }
+
+    @JsonGetter("post_id")
+    protected Long getPostId() {
+        if (post != null)
+            return post.getId();
+
+        return null;
+    }
+
+    @JsonGetter("reply_id")
+    protected Long getReplyId() {
+        if (user != null)
+            return reply.getId();
+
+        return null;
     }
 
     public Long getId() {
