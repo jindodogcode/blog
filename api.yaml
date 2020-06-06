@@ -5,8 +5,8 @@ info:
   contact:
     email: "michaeljkennedy@protonmail.com"
 servers:
-  - description: "Main server"
-    url: http://localhost:8080
+  - description: Developement server
+    url: http://localhost:8080/api/v1
 tags:
   - name: users
     description: "Operations about users"
