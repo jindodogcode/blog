@@ -1,13 +1,13 @@
 package dev.mkennedy.blog.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import dev.mkennedy.blog.entity.Post;
 import dev.mkennedy.blog.entity.Reply;
 import dev.mkennedy.blog.entity.User;
 
 @Repository
-public interface ReplyRepository extends CrudRepository<Reply, Long> {
+public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
     Iterable<Reply> findByUser(User user);
 
