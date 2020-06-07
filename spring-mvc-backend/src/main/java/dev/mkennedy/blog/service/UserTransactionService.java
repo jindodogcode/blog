@@ -1,9 +1,13 @@
 package dev.mkennedy.blog.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import dev.mkennedy.blog.entity.User;
 import dev.mkennedy.blog.entity.UserSecurity;
+import dev.mkennedy.blog.entity.UserSecurity.Role;
+import dev.mkennedy.blog.model.NewUserForm;
 import dev.mkennedy.blog.repository.UserRepository;
 import dev.mkennedy.blog.repository.UserSecurityRepository;
 
@@ -11,18 +15,30 @@ import dev.mkennedy.blog.repository.UserSecurityRepository;
 @Transactional
 public class UserTransactionService {
 
+    @Autowired
     private UserRepository userRepo;
+    @Autowired
     private UserSecurityRepository userSecurityRepo;
-
-    public UserTransactionService(UserRepository userRepo, UserSecurityRepository userSecurityRepo) {
-        this.userRepo = userRepo;
-        this.userSecurityRepo = userSecurityRepo;
-    }
+    @Autowired
+    private PasswordEncoder encoder;
 
     public User saveUserAndSecurity(User user, UserSecurity security) {
         User saved = userRepo.save(user);
         security.setUser(user);
         saved.setSecurity(userSecurityRepo.save(security));
+
+        return saved;
+    }
+
+    public User saveNewUser(NewUserForm newUserForm) {
+        User user = newUserForm.toUser(encoder, Role.ROLE_USER);
+        UserSecurity security = user.getSecurity();
+        User saved = userRepo.save(user);
+        security.setUser(saved);
+        saved.setSecurity(userSecurityRepo.save(security));
+
+        System.out.println(user);
+        System.out.println(user.getSecurity());
 
         return saved;
     }
