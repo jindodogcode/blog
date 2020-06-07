@@ -45,16 +45,20 @@ public class User {
 
     public User() {}
 
-    public User(
-        String email,
-        String username,
-        String firstName,
-        String lastName
-    ) {
+    public User(String email, String username, String firstName, String lastName) {
         this.email = email;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public User(String email,
+            String username,
+            String firstName,
+            String lastName,
+            UserSecurity security) {
+        this(email, username, firstName, lastName);
+        this.security = security;
     }
 
     @PrePersist
