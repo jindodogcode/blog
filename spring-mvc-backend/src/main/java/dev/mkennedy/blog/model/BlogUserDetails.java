@@ -20,6 +20,7 @@ public class BlogUserDetails implements UserDetails {
     public BlogUserDetails(User user) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getSecurity().getRole().toString()));
+        authorities.add(new SimpleGrantedAuthority(user.getUsername()));
 
         this.username = user.getUsername();
         this.password = user.getSecurity().getPassword();

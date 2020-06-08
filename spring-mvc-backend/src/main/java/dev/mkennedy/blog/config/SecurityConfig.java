@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,14 +21,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     UserDetailsService userDetailsService;
 
     @Bean
-    public PasswordEncoder getPasswordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public WebSecurity webSecurity() {
+        return new WebSecurity();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
-            .passwordEncoder(getPasswordEncoder());
+            .passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -37,9 +43,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                 .antMatchers("/api/v1/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/users/{username}/posts")
+                    .access("@webSecurity.checkUsername(authentication,#username)")
+                .antMatchers(HttpMethod.PATCH, "/api/v1/users/{username}/**")
+                    .access("@webSecurity.checkUsername(authentication,#username)")
+                .antMatchers(HttpMethod.DELETE, "/api/v1/users/{username}/**")
+                    .access("@webSecurity.checkUsername(authentication,#username)")
                 .antMatchers("/api/v1/**").authenticated()
             .and()
             .csrf()
                 .disable();
+    }
+
+    protected class WebSecurity {
+        public boolean checkUsername(Authentication authentication, String username) {
+            return authentication
+                .getAuthorities()
+                .stream()
+                .anyMatch(auth -> auth.getAuthority().equals(username));
+        }
     }
 }
