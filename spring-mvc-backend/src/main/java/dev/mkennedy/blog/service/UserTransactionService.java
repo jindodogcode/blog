@@ -23,6 +23,7 @@ public class UserTransactionService {
     private PasswordEncoder encoder;
 
     public User saveUserAndSecurity(User user, UserSecurity security) {
+        user.setSecurity(null);
         User saved = userRepo.save(user);
         security.setUser(user);
         saved.setSecurity(userSecurityRepo.save(security));
@@ -33,10 +34,17 @@ public class UserTransactionService {
     public User saveNewUser(NewUserForm newUserForm) {
         User user = newUserForm.toUser(encoder, Role.ROLE_USER);
         UserSecurity security = user.getSecurity();
+        user.setSecurity(null);
         User saved = userRepo.save(user);
         security.setUser(saved);
         saved.setSecurity(userSecurityRepo.save(security));
 
         return saved;
+    }
+
+    public void delete(User user) {
+        UserSecurity security = user.getSecurity();
+        userSecurityRepo.delete(security);
+        userRepo.delete(user);
     }
 }
