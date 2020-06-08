@@ -51,6 +51,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .access("@webSecurity.checkUsername(authentication,#username)")
                 .antMatchers("/api/v1/**").authenticated()
             .and()
+            .logout()
+                .logoutUrl("/api/v1/logout")
+                .logoutSuccessUrl("/")
+                .permitAll()
+            .and()
             .csrf()
                 .disable();
     }
