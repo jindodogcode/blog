@@ -1,18 +1,18 @@
 package dev.mkennedy.blog.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity(name = "Users")
 public class User {
@@ -20,28 +20,46 @@ public class User {
     @Id
     @Column(name = "id")
     private UUID id;
-    @NotNull
-    @Email
     @Column(name = "email", nullable = false, unique = true)
     private String email;
-    @NotNull
     @Column(name = "username", nullable = false, unique = true)
     private String username;
-    @NotNull
     @Column(name = "first_name", nullable = false)
     private String firstName;
-    @NotNull
     @Column(name = "last_name", nullable = false)
     private String lastName;
-    @NotNull
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
     @Column(name = "last_logged_in", nullable = true)
     private LocalDateTime lastLoggedIn;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id")
-    @JsonProperty(access = Access.WRITE_ONLY)
+    @JsonIgnore
     private UserSecurity security;
+    @OneToMany(
+        mappedBy = "user",
+        fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    @JsonIgnore
+    private List<Post> posts;
+    @OneToMany(
+        mappedBy = "user",
+        fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    @JsonIgnore
+    private List<Reply> replies;
+    @OneToMany(
+        mappedBy = "user",
+        fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    @JsonIgnore
+    private List<MediaContent> mediaContent;
 
     public User() {}
 
@@ -129,6 +147,30 @@ public class User {
 
     public void setSecurity(UserSecurity security) {
       this.security = security;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public List<Reply> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(List<Reply> replies) {
+        this.replies = replies;
+    }
+
+    public List<MediaContent> getMediaContent() {
+        return mediaContent;
+    }
+
+    public void setMediaContent(List<MediaContent> mediaContent) {
+        this.mediaContent = mediaContent;
     }
 
     @Override
