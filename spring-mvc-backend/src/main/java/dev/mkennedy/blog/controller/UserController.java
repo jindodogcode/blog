@@ -4,6 +4,7 @@ import dev.mkennedy.blog.entity.Post;
 import dev.mkennedy.blog.entity.User;
 import dev.mkennedy.blog.model.NewPostForm;
 import dev.mkennedy.blog.model.NewUserForm;
+import dev.mkennedy.blog.model.UpdateUserForm;
 import dev.mkennedy.blog.repository.PostRepository;
 import dev.mkennedy.blog.repository.UserRepository;
 import dev.mkennedy.blog.service.UserTransactionService;
@@ -12,6 +13,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,6 +49,18 @@ public class UserController {
                 .orElseThrow(() -> new EntityNotFoundException());
 
         return user;
+    }
+
+    @PatchMapping("/{username}")
+    public User getUserByUsername(@PathVariable("username") String username,
+            @Valid @RequestBody UpdateUserForm userForm) {
+        User user = userRepo.findByUsername(username)
+            .orElseThrow(() -> new EntityNotFoundException("No user with name: " + username + " found"));
+        user.setEmail(userForm.getEmail());
+        user.setFirstName(userForm.getFirstName());
+        user.setLastName(userForm.getLastName());
+
+        return userRepo.save(user);
     }
 
     @PostMapping("/{username}/posts")
