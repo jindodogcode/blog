@@ -1,6 +1,6 @@
 package dev.mkennedy.blog.controller;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,8 +17,11 @@ public class HomeController {
 
     @GetMapping("/api/v1/login")
     public User login(Authentication authentication) {
-        Optional<User> userOpt = userRepo.findByUsername(authentication.getName());
-        
-        return userOpt.orElseThrow(() -> new UsernameNotFoundException("No user of that name"));
+        User user = userRepo.findByUsername(authentication.getName())
+            .orElseThrow(() -> new UsernameNotFoundException(
+                "username: " + authentication.getName() + " not found"));
+        user.setLastLoggedIn(LocalDateTime.now());
+
+        return userRepo.save(user);
     }
 }

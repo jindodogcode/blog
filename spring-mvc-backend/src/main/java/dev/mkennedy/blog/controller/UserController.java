@@ -55,7 +55,7 @@ public class UserController {
     public User getUserByUsername(@PathVariable("username") String username,
             @Valid @RequestBody UpdateUserForm userForm) {
         User user = userRepo.findByUsername(username)
-            .orElseThrow(() -> new EntityNotFoundException("No user with name: " + username + " found"));
+            .orElseThrow(() -> new EntityNotFoundException("username: " + username + " not found"));
         user.setEmail(userForm.getEmail());
         user.setFirstName(userForm.getFirstName());
         user.setLastName(userForm.getLastName());
@@ -67,7 +67,7 @@ public class UserController {
     public Post addUserPost(@PathVariable("username") String username,
             @Valid @RequestBody NewPostForm postForm) {
         User user = userRepo.findByUsername(username).orElseThrow(
-                () -> new UsernameNotFoundException(username + "not found"));
+                () -> new UsernameNotFoundException("username: " + username + "not found"));
         Post post = postForm.toPost(user);
         Post saved = postRepo.save(post);
 
