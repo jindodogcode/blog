@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotNull;
 
 @Entity(name = "Users_Security")
 public class UserSecurity {
@@ -22,7 +21,6 @@ public class UserSecurity {
     @Id
     @Column(name = "id")
     private UUID id;
-    @NotNull
     @Column(name = "password", nullable = false)
     private String password;
     @Column(name = "role", nullable = false)
