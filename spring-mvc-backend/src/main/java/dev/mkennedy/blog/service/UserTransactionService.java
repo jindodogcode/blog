@@ -37,9 +37,6 @@ public class UserTransactionService {
         security.setUser(saved);
         saved.setSecurity(userSecurityRepo.save(security));
 
-        System.out.println(user);
-        System.out.println(user.getSecurity());
-
         return saved;
     }
 }
