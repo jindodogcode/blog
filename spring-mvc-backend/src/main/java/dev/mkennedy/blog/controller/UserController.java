@@ -4,15 +4,18 @@ import dev.mkennedy.blog.entity.Post;
 import dev.mkennedy.blog.entity.User;
 import dev.mkennedy.blog.model.NewPostForm;
 import dev.mkennedy.blog.model.NewUserForm;
+import dev.mkennedy.blog.model.UpdatePostForm;
 import dev.mkennedy.blog.model.UpdateUserForm;
 import dev.mkennedy.blog.repository.PostRepository;
 import dev.mkennedy.blog.repository.UserRepository;
 import dev.mkennedy.blog.service.UserTransactionService;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +25,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.support.SessionStatus;
 
 @RestController
 @RequestMapping(path = "/api/v1/users")
@@ -89,13 +91,37 @@ public class UserController {
     }
 
     @GetMapping("/{username}/posts")
-    public Iterable<Post> getUserPosts(
-            @PathVariable("username") String username) {
+    public Iterable<Post> getUserPosts(@PathVariable("username") String username) {
         return postRepo.findAllByUsername(username);
     }
 
+    @PatchMapping("/{username}/posts/{id}")
+    public Post getUserPost(@PathVariable("username") String username,
+            @PathVariable("id") Long id,
+            @Valid @RequestBody UpdatePostForm postForm) {
+        User user = userRepo.findByUsername(username)
+            .orElseThrow(() -> usernameNotFoundExceptionBuilder(username));
+        Post post = postRepo.findById(id)
+            .orElseThrow(() -> entityNotFoundExceptionBuilder(Post.class, id));
+
+        if (!post.getUser().equals(user)) {
+            throw new AuthorizationServiceException("not authorized to edit that post");
+        }
+
+        post.setTitle(postForm.getTitle());
+        post.setContent(postForm.getContent());
+        post.setEdited(LocalDateTime.now());
+
+        return postRepo.save(post);
+    }
+
     private UsernameNotFoundException usernameNotFoundExceptionBuilder(String username) {
-        return new UsernameNotFoundException("username: " + username + " not found");
+        return new UsernameNotFoundException("username " + username + " not found");
+    }
+
+    private EntityNotFoundException entityNotFoundExceptionBuilder(Class<?> clazz, Object id) {
+        return new EntityNotFoundException(
+            "no entity of type " + clazz.getSimpleName() + " with id " + id + " found");
     }
 }
 
