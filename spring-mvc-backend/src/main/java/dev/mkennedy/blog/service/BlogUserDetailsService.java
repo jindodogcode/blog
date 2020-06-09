@@ -18,7 +18,7 @@ public class BlogUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepo.findByUsername(username);
+        Optional<User> user = userRepo.findByEmailOrUsername(username);
 
         return user
             .map(BlogUserDetails::new)
