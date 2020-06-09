@@ -3,6 +3,7 @@ package dev.mkennedy.blog.model;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import dev.mkennedy.blog.entity.User;
@@ -15,7 +16,11 @@ public class NewUserForm {
     @Email
     private String email;
     @NotNull
-    @Size(min = 4)
+    @Size(min = 3, max = 50)
+    @Pattern(
+        regexp = "[A-Za-z][A-Za-z0-9_-]*",
+        message = "must start with a letter and only contain letters, numbers, dashes, and underscores"
+    )
     private String username;
     @NotBlank
     private String firstName;
