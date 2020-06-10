@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.8'
 
 services:
 
@@ -11,4 +11,12 @@ services:
       POSTGRES_PASSWORD: something
       POSTGRES_DB: blog
     volumes:
-      - ./.data:/var/lib/postgresql/data
+      - ./.data/pgdata:/var/lib/postgresql/data
+
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.1
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - ./.data/esdata:/usr/share/elasticsearch/data
