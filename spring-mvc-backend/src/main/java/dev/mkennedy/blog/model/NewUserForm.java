@@ -18,13 +18,21 @@ public class NewUserForm {
     @NotNull
     @Size(min = 3, max = 50)
     @Pattern(
-        regexp = "[A-Za-z][A-Za-z0-9_-]*",
+        regexp = "^\\p{L}[\\p{L}\\p{N}\\p{Pd}\\p{Pc}]+$",
         message = "must start with a letter and only contain letters, numbers, dashes, and underscores"
     )
     private String username;
     @NotBlank
+    @Pattern(
+        regexp = "^\\p{L}[\\p{L}\\p{Pd} ]+$",
+        message = "must start with a letter and only contain letters, dashes, and spaces"
+    )
     private String firstName;
     @NotBlank
+    @Pattern(
+        regexp = "^\\p{L}[\\p{L}\\p{Pd} ]+$",
+        message = "must start with a letter and only contain letters, dashes, and spaces"
+    )
     private String lastName;
     @NotNull
     @Size(min = 8)

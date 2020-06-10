@@ -3,6 +3,7 @@ package dev.mkennedy.blog.model;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public class UpdateUserForm {
 
@@ -10,8 +11,16 @@ public class UpdateUserForm {
     @Email
     private String email;
     @NotBlank
+    @Pattern(
+        regexp = "^\\p{L}[\\p{L}\\p{Pd} ]+$",
+        message = "must start with a letter and only contain letters, dashes, and spaces"
+    )
     private String firstName;
     @NotBlank
+    @Pattern(
+        regexp = "^\\p{L}[\\p{L}\\p{Pd} ]+$",
+        message = "must start with a letter and only contain letters, dashes, and spaces"
+    )
     private String lastName;
 
     public UpdateUserForm() {}
