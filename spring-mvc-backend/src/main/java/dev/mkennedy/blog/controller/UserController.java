@@ -1,5 +1,6 @@
 package dev.mkennedy.blog.controller;
 
+import dev.mkennedy.blog.PagingDefaults;
 import dev.mkennedy.blog.entity.Post;
 import dev.mkennedy.blog.entity.User;
 import dev.mkennedy.blog.model.NewPostForm;
@@ -15,6 +16,9 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -91,8 +96,20 @@ public class UserController {
     }
 
     @GetMapping("/{username}/posts")
-    public Iterable<Post> getUserPosts(@PathVariable("username") String username) {
-        return postRepo.findAllByUsername(username);
+    public Page<Post> getUserPosts(
+            @PathVariable("username") String username,
+            @RequestParam(
+                value = "page",
+                required = false,
+                defaultValue = PagingDefaults.PAGE
+            ) int page,
+            @RequestParam(
+                value = "pagesize",
+                required = false,
+                defaultValue = PagingDefaults.PAGESIZE
+            ) int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return postRepo.findAllByUsername(username, pageable);
     }
 
     @PatchMapping("/{username}/posts/{id}")
