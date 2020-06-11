@@ -70,9 +70,8 @@ public class UserController {
             @Valid @RequestBody UpdateUserForm userForm) {
         User user = userRepo.findByUsername(username)
             .orElseThrow(() -> usernameNotFoundExceptionBuilder(username));
-        user.setEmail(userForm.getEmail());
-        user.setFirstName(userForm.getFirstName());
-        user.setLastName(userForm.getLastName());
+
+        userForm.updateUser(user);
 
         return userRepo.save(user);
     }
@@ -128,8 +127,7 @@ public class UserController {
             throw new AuthorizationServiceException("not authorized to edit that post");
         }
 
-        post.setTitle(postForm.getTitle());
-        post.setContent(postForm.getContent());
+        postForm.updatePost(post);
         post.setEdited(LocalDateTime.now());
 
         return postRepo.save(post);
