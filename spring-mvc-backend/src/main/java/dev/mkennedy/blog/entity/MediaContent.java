@@ -43,7 +43,7 @@ public class MediaContent {
         this.uploaded = LocalDateTime.now();
     }
 
-    @JsonGetter("user_id")
+    @JsonGetter("userId")
     protected UUID getUserId() {
         if (user != null)
             return user.getId();

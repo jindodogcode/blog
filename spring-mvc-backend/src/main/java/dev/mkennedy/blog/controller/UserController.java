@@ -2,12 +2,16 @@ package dev.mkennedy.blog.controller;
 
 import dev.mkennedy.blog.PagingDefaults;
 import dev.mkennedy.blog.entity.Post;
+import dev.mkennedy.blog.entity.Reply;
 import dev.mkennedy.blog.entity.User;
 import dev.mkennedy.blog.model.NewPostForm;
+import dev.mkennedy.blog.model.NewReplyForm;
 import dev.mkennedy.blog.model.NewUserForm;
 import dev.mkennedy.blog.model.UpdatePostForm;
+import dev.mkennedy.blog.model.UpdateReplyForm;
 import dev.mkennedy.blog.model.UpdateUserForm;
 import dev.mkennedy.blog.repository.PostRepository;
+import dev.mkennedy.blog.repository.ReplyRepository;
 import dev.mkennedy.blog.repository.UserRepository;
 import dev.mkennedy.blog.service.UserTransactionService;
 import java.io.IOException;
@@ -43,6 +47,8 @@ public class UserController {
     private UserTransactionService userService;
     @Autowired
     private PostRepository postRepo;
+    @Autowired
+    private ReplyRepository replyRepo;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -115,7 +121,7 @@ public class UserController {
     }
 
     @PatchMapping("/{username}/posts/{id}")
-    public Post getUserPost(@PathVariable("username") String username,
+    public Post updateUserPost(@PathVariable("username") String username,
             @PathVariable("id") Long id,
             @Valid @RequestBody UpdatePostForm postForm) {
         User user = userRepo.findByUsername(username)
@@ -131,6 +137,68 @@ public class UserController {
         post.setEdited(LocalDateTime.now());
 
         return postRepo.save(post);
+    }
+
+    @PostMapping("/{username}/replies")
+    public Reply addUserReply(
+            @PathVariable("username") String username,
+            @Valid @RequestBody NewReplyForm replyForm) {
+        User user = userRepo.findByUsername(username)
+            .orElseThrow(() -> usernameNotFoundExceptionBuilder(username));
+        Post post = postRepo.findById(replyForm.getPostId())
+            .orElseThrow(() -> entityNotFoundExceptionBuilder(Post.class, replyForm.getPostId()));
+        Reply repliedTo;
+        Long replyId = replyForm.getReplyId();
+        if (replyId != null) {
+            repliedTo = replyRepo.findById(replyId)
+                .orElseThrow(() -> entityNotFoundExceptionBuilder(Reply.class, replyId));
+        } else {
+            repliedTo = null;
+        }
+
+        Reply reply = replyForm.toReply(user);
+        reply.setPost(post);
+        reply.setReply(repliedTo);
+
+        return replyRepo.save(reply);
+    }
+
+    @GetMapping("/{username}/replies")
+    public Page<Reply> getUserReplies(
+            @PathVariable("username") String username,
+            @RequestParam(
+                value = "page",
+                required = false,
+                defaultValue = PagingDefaults.PAGE
+            ) int page,
+            @RequestParam(
+                value = "pagesize",
+                required = false,
+                defaultValue = PagingDefaults.PAGESIZE
+            ) int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        return replyRepo.findByUsername(username, pageable);
+    }
+
+    @PatchMapping("/{username}/replies/{id}")
+    public Reply updateUserReply(
+            @PathVariable("username") String username,
+            @PathVariable("id") long id,
+            @Valid @RequestBody UpdateReplyForm replyForm) {
+        User user = userRepo.findByUsername(username)
+            .orElseThrow(() -> usernameNotFoundExceptionBuilder(username));
+        Reply reply = replyRepo.findById(id)
+            .orElseThrow(() -> entityNotFoundExceptionBuilder(Reply.class, id));
+
+        if (!reply.getUser().equals(user)) {
+            throw new AuthorizationServiceException("not authorized to edit that reply");
+        }
+
+        replyForm.updateReply(reply);
+        reply.setEdited(LocalDateTime.now());
+
+        return replyRepo.save(reply);
     }
 
     private UsernameNotFoundException usernameNotFoundExceptionBuilder(String username) {
