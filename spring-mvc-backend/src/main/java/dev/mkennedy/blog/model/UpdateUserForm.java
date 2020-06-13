@@ -4,6 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import dev.mkennedy.blog.entity.User;
 
 public class UpdateUserForm {
@@ -12,12 +13,14 @@ public class UpdateUserForm {
     @Email
     private String email;
     @NotBlank
+    @Size(max = 32)
     @Pattern(
         regexp = "^\\p{L}[\\p{L}\\p{Pd} ]+$",
         message = "must start with a letter and only contain letters, dashes, and spaces"
     )
     private String firstName;
     @NotBlank
+    @Size(max = 32)
     @Pattern(
         regexp = "^\\p{L}[\\p{L}\\p{Pd} ]+$",
         message = "must start with a letter and only contain letters, dashes, and spaces"

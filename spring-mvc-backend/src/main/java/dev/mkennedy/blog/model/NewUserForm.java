@@ -16,26 +16,28 @@ public class NewUserForm {
     @Email
     private String email;
     @NotNull
-    @Size(min = 3, max = 50)
+    @Size(min = 3, max = 32)
     @Pattern(
         regexp = "^\\p{L}[\\p{L}\\p{N}\\p{Pd}\\p{Pc}]+$",
         message = "must start with a letter and only contain letters, numbers, dashes, and underscores"
     )
     private String username;
     @NotBlank
+    @Size(max = 32)
     @Pattern(
         regexp = "^\\p{L}[\\p{L}\\p{Pd} ]+$",
         message = "must start with a letter and only contain letters, dashes, and spaces"
     )
     private String firstName;
     @NotBlank
+    @Size(max = 32)
     @Pattern(
         regexp = "^\\p{L}[\\p{L}\\p{Pd} ]+$",
         message = "must start with a letter and only contain letters, dashes, and spaces"
     )
     private String lastName;
     @NotNull
-    @Size(min = 8)
+    @Size(min = 8, max = 64)
     private String password;
 
     public NewUserForm() {}
