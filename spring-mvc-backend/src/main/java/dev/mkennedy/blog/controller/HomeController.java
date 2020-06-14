@@ -1,6 +1,6 @@
 package dev.mkennedy.blog.controller;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,7 +20,7 @@ public class HomeController {
         User user = userRepo.findByUsername(authentication.getName())
             .orElseThrow(() -> new UsernameNotFoundException(
                 "username: " + authentication.getName() + " not found"));
-        user.setLastLoggedIn(LocalDateTime.now());
+        user.setLastLoggedIn(ZonedDateTime.now());
 
         return userRepo.save(user);
     }

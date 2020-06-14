@@ -1,6 +1,6 @@
 package dev.mkennedy.blog.model;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -13,14 +13,13 @@ import org.springframework.validation.ObjectError;
 public class ApiError {
     
     private HttpStatus status;
-    // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
-    private LocalDateTime timestamp;
+    private ZonedDateTime timestamp;
     private String message;
     private String debugMessage;
     private List<ApiSubError> subErrors;
 
     private ApiError() {
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = ZonedDateTime.now();
     }
 
     public ApiError(HttpStatus status) {
@@ -101,11 +100,11 @@ public class ApiError {
       this.status = status;
     }
 
-    public LocalDateTime getTimestamp() {
+    public ZonedDateTime getTimestamp() {
       return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(ZonedDateTime timestamp) {
       this.timestamp = timestamp;
     }
 

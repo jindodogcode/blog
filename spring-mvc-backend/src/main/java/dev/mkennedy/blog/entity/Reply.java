@@ -1,6 +1,6 @@
 package dev.mkennedy.blog.entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,9 +26,9 @@ public class Reply {
     @Column(name = "content", nullable = false)
     private String content;
     @Column(name = "created", nullable = false)
-    private LocalDateTime created;
+    private ZonedDateTime created;
     @Column(name = "edited", nullable = true)
-    private LocalDateTime edited;
+    private ZonedDateTime edited;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     @JsonIgnore
@@ -52,7 +52,7 @@ public class Reply {
 
     @PrePersist
     public void prePersist() {
-        this.created = LocalDateTime.now();
+        this.created = ZonedDateTime.now();
     }
 
     @JsonGetter("userId")
@@ -95,19 +95,19 @@ public class Reply {
         this.content = Jsoup.clean(content, Whitelist.basicWithImages());
     }
 
-    public LocalDateTime getCreated() {
+    public ZonedDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(ZonedDateTime created) {
         this.created = created;
     }
 
-    public LocalDateTime getEdited() {
+    public ZonedDateTime getEdited() {
         return edited;
     }
 
-    public void setEdited(LocalDateTime edited) {
+    public void setEdited(ZonedDateTime edited) {
         this.edited = edited;
     }
 

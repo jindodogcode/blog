@@ -1,6 +1,6 @@
 package dev.mkennedy.blog.entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -29,9 +29,9 @@ public class User {
     @Column(name = "last_name", nullable = false)
     private String lastName;
     @Column(name = "created", nullable = false)
-    private LocalDateTime created;
+    private ZonedDateTime created;
     @Column(name = "last_logged_in", nullable = true)
-    private LocalDateTime lastLoggedIn;
+    private ZonedDateTime lastLoggedIn;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id")
     @JsonIgnore
@@ -82,7 +82,7 @@ public class User {
     @PrePersist
     public void prePersist() {
         this.id = UUID.randomUUID();
-        this.created = LocalDateTime.now();
+        this.created = ZonedDateTime.now();
     }
 
     public UUID getId() {
@@ -125,19 +125,19 @@ public class User {
       this.lastName = lastName;
     }
 
-    public LocalDateTime getCreated() {
+    public ZonedDateTime getCreated() {
       return created;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(ZonedDateTime created) {
       this.created = created;
     }
 
-    public LocalDateTime getLastLoggedIn() {
+    public ZonedDateTime getLastLoggedIn() {
       return lastLoggedIn;
     }
 
-    public void setLastLoggedIn(LocalDateTime lastLoggedIn) {
+    public void setLastLoggedIn(ZonedDateTime lastLoggedIn) {
       this.lastLoggedIn = lastLoggedIn;
     }
 

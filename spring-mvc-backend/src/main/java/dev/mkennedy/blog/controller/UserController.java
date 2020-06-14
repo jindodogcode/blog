@@ -15,7 +15,7 @@ import dev.mkennedy.blog.repository.ReplyRepository;
 import dev.mkennedy.blog.repository.UserRepository;
 import dev.mkennedy.blog.service.UserTransactionService;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -83,16 +83,16 @@ public class UserController {
     }
 
     @DeleteMapping("/{username}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserByUsername(@PathVariable("username") String username,
             HttpServletResponse response) throws IOException {
         User user = userRepo.findByUsername(username)
             .orElseThrow(() -> usernameNotFoundExceptionBuilder(username));
         userService.delete(user);
-
-        response.sendRedirect("/api/v1/logout");
     }
 
     @PostMapping("/{username}/posts")
+    @ResponseStatus(HttpStatus.CREATED)
     public Post addUserPost(@PathVariable("username") String username,
             @Valid @RequestBody NewPostForm postForm) {
         User user = userRepo.findByUsername(username).orElseThrow(
@@ -134,12 +134,13 @@ public class UserController {
         }
 
         postForm.updatePost(post);
-        post.setEdited(LocalDateTime.now());
+        post.setEdited(ZonedDateTime.now());
 
         return postRepo.save(post);
     }
 
     @PostMapping("/{username}/replies")
+    @ResponseStatus(HttpStatus.CREATED)
     public Reply addUserReply(
             @PathVariable("username") String username,
             @Valid @RequestBody NewReplyForm replyForm) {
@@ -196,7 +197,7 @@ public class UserController {
         }
 
         replyForm.updateReply(reply);
-        reply.setEdited(LocalDateTime.now());
+        reply.setEdited(ZonedDateTime.now());
 
         return replyRepo.save(reply);
     }

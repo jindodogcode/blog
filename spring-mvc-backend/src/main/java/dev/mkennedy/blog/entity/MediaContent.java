@@ -1,7 +1,7 @@
 package dev.mkennedy.blog.entity;
 
 import java.net.URI;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,7 +25,7 @@ public class MediaContent {
     @Column(name = "uri")
     private URI uri;
     @Column(name = "uploaded")
-    private LocalDateTime uploaded;
+    private ZonedDateTime uploaded;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
@@ -40,7 +40,7 @@ public class MediaContent {
 
     @PrePersist
     public void prePersist() {
-        this.uploaded = LocalDateTime.now();
+        this.uploaded = ZonedDateTime.now();
     }
 
     @JsonGetter("userId")
@@ -67,11 +67,11 @@ public class MediaContent {
       this.uri = uri;
     }
 
-    public LocalDateTime getUploaded() {
+    public ZonedDateTime getUploaded() {
       return uploaded;
     }
 
-    public void setUploaded(LocalDateTime uploaded) {
+    public void setUploaded(ZonedDateTime uploaded) {
       this.uploaded = uploaded;
     }
 
