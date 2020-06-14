@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import dev.mkennedy.blog.entity.Post;
@@ -19,6 +20,7 @@ import dev.mkennedy.blog.repository.UserRepository;
 import dev.mkennedy.blog.service.UserTransactionService;
 
 @Component
+@Profile({ "!test", "dev" })
 public class DataLoader implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DataLoader.class);
@@ -38,7 +40,7 @@ public class DataLoader implements CommandLineRunner {
 
         Optional<User> dogOpt = userRepo.findByUsername("dog");
         User dog = dogOpt.orElseGet(() -> {
-            UserSecurity s = new UserSecurity(passwordEncoder.encode("dogdog"), Role.ROLE_USER);
+            UserSecurity s = new UserSecurity(passwordEncoder.encode("dogdogdog"), Role.ROLE_USER);
             User u = new User("dog@dog.com", "dog", "Dog", "Doggerton");
             u = userTransactionService.saveUserAndSecurity(u, s);
 
@@ -53,7 +55,7 @@ public class DataLoader implements CommandLineRunner {
 
         Optional<User> catOpt = userRepo.findByUsername("cat");
         User cat = catOpt.orElseGet(() -> {
-            UserSecurity s = new UserSecurity(passwordEncoder.encode("cat"), Role.ROLE_USER);
+            UserSecurity s = new UserSecurity(passwordEncoder.encode("catcatcat"), Role.ROLE_USER);
             User u =  new User("cat@cat.gov", "cat", "Cat", "De Catsville");
             u = userTransactionService.saveUserAndSecurity(u, s);
             u = userRepo.findById(u.getId()).get();
