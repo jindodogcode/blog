@@ -19,5 +19,5 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
     Iterable<Reply> findByReply(Reply reply);
 
     @Query("SELECT r FROM Replies r WHERE r.user = (SELECT u FROM Users u WHERE u.username = ?1)")
-    Page<Reply> findByUsername(String username, Pageable pageable);
+    Page<Reply> findAllByUsername(String username, Pageable pageable);
 }
