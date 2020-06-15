@@ -70,7 +70,7 @@ public class DataLoader implements CommandLineRunner {
         log.info("Initializing posts");
 
         List<Post> posts = new ArrayList<>();
-        postRepo.findAllByUsername("dog").forEach(posts::add);
+        postRepo.findAllByUser(dog).forEach(posts::add);
         if (posts.isEmpty()) {
             posts = Arrays.asList(
                 new Post("I had a great day", "it was really good", dog),
