@@ -10,13 +10,11 @@ import dev.mkennedy.blog.model.NewUserForm;
 import dev.mkennedy.blog.model.UpdatePostForm;
 import dev.mkennedy.blog.model.UpdateReplyForm;
 import dev.mkennedy.blog.model.UpdateUserForm;
-import dev.mkennedy.blog.repository.PostRepository;
-import dev.mkennedy.blog.repository.ReplyRepository;
-import dev.mkennedy.blog.repository.UserRepository;
-import dev.mkennedy.blog.service.UserTransactionService;
+import dev.mkennedy.blog.service.PostService;
+import dev.mkennedy.blog.service.ReplyService;
+import dev.mkennedy.blog.service.UserService;
 import java.io.IOException;
 import java.time.ZonedDateTime;
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,52 +38,37 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepo;
+    private UserService userService;
     @Autowired
-    private UserTransactionService userService;
+    private PostService postService;
     @Autowired
-    private PostRepository postRepo;
-    @Autowired
-    private ReplyRepository replyRepo;
+    private ReplyService replyService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public User addUser(@Valid @RequestBody NewUserForm userForm) {
-        User saved = userService.saveNewUser(userForm);
-
-        return saved;
-    }
-
-    @GetMapping
-    public Iterable<User> searchUsers() {
-        return userRepo.findAll();
+        return userService.saveNewUser(userForm);
     }
 
     @GetMapping("/{username}")
     public User getUserByUsername(@PathVariable("username") String username) {
-        User user = userRepo.findByUsername(username)
-                .orElseThrow(() -> entityNotFoundExceptionBuilder(User.class, username));
-
-        return user;
+        return userService.findByUsername(username);
     }
 
     @PatchMapping("/{username}")
     public User updateUserByUsername(@PathVariable("username") String username,
             @Valid @RequestBody UpdateUserForm userForm) {
-        User user = userRepo.findByUsername(username)
-            .orElseThrow(() -> entityNotFoundExceptionBuilder(User.class, username));
-
+        User user = userService.findByUsername(username);
         userForm.updateUser(user);
 
-        return userRepo.save(user);
+        return userService.save(user);
     }
 
     @DeleteMapping("/{username}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserByUsername(@PathVariable("username") String username,
             HttpServletResponse response) throws IOException {
-        User user = userRepo.findByUsername(username)
-            .orElseThrow(() -> entityNotFoundExceptionBuilder(User.class, username));
+        User user = userService.findByUsername(username);
         userService.delete(user);
     }
 
@@ -93,12 +76,10 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public Post addUserPost(@PathVariable("username") String username,
             @Valid @RequestBody NewPostForm postForm) {
-        User user = userRepo.findByUsername(username).orElseThrow(
-                () -> entityNotFoundExceptionBuilder(User.class, username));
+        User user = userService.findByUsername(username);
         Post post = postForm.toPost(user);
-        Post saved = postRepo.save(post);
 
-        return saved;
+        return postService.save(post);
     }
 
     @GetMapping("/{username}/posts")
@@ -115,11 +96,10 @@ public class UserController {
                 defaultValue = PagingDefaults.PAGESIZE
             ) int pageSize) {
         @SuppressWarnings("unused")
-        User _user = userRepo.findByUsername(username).orElseThrow(
-                () -> entityNotFoundExceptionBuilder(User.class, username));
+        User user = userService.findByUsername(username);
         Pageable pageable = PageRequest.of(page, pageSize);
         
-        return postRepo.findAllByUsername(username, pageable);
+        return postService.findAllByUsername(username, pageable);
     }
 
     @PatchMapping("/{username}/posts/{id}")
@@ -127,15 +107,13 @@ public class UserController {
             @PathVariable("id") Long id,
             @Valid @RequestBody UpdatePostForm postForm) {
         @SuppressWarnings("unused")
-        User user = userRepo.findByUsername(username)
-            .orElseThrow(() -> entityNotFoundExceptionBuilder(User.class, username));
-        Post post = postRepo.findById(id)
-            .orElseThrow(() -> entityNotFoundExceptionBuilder(Post.class, id));
+        User user = userService.findByUsername(username);
+        Post post = postService.findById(id);
 
         postForm.updatePost(post);
         post.setEdited(ZonedDateTime.now());
 
-        return postRepo.save(post);
+        return postService.save(post);
     }
 
     @PostMapping("/{username}/replies")
@@ -143,15 +121,12 @@ public class UserController {
     public Reply addUserReply(
             @PathVariable("username") String username,
             @Valid @RequestBody NewReplyForm replyForm) {
-        User user = userRepo.findByUsername(username)
-            .orElseThrow(() -> entityNotFoundExceptionBuilder(User.class, username));
-        Post post = postRepo.findById(replyForm.getPostId())
-            .orElseThrow(() -> entityNotFoundExceptionBuilder(Post.class, replyForm.getPostId()));
+        User user = userService.findByUsername(username);
+        Post post = postService.findById(replyForm.getPostId());
         Reply repliedTo;
         Long replyId = replyForm.getReplyId();
         if (replyId != null) {
-            repliedTo = replyRepo.findById(replyId)
-                .orElseThrow(() -> entityNotFoundExceptionBuilder(Reply.class, replyId));
+            repliedTo = replyService.findById(replyId);
         } else {
             repliedTo = null;
         }
@@ -160,7 +135,7 @@ public class UserController {
         reply.setPost(post);
         reply.setReply(repliedTo);
 
-        return replyRepo.save(reply);
+        return replyService.save(reply);
     }
 
     @GetMapping("/{username}/replies")
@@ -177,11 +152,10 @@ public class UserController {
                 defaultValue = PagingDefaults.PAGESIZE
             ) int pageSize) {
         @SuppressWarnings("unused")
-        User user = userRepo.findByUsername(username)
-            .orElseThrow(() -> entityNotFoundExceptionBuilder(User.class, username));
+        User user = userService.findByUsername(username);
         Pageable pageable = PageRequest.of(page, pageSize);
 
-        return replyRepo.findByUsername(username, pageable);
+        return replyService.findAllByUsername(username, pageable);
     }
 
     @PatchMapping("/{username}/replies/{id}")
@@ -190,20 +164,13 @@ public class UserController {
             @PathVariable("id") long id,
             @Valid @RequestBody UpdateReplyForm replyForm) {
         @SuppressWarnings("unused")
-        User user = userRepo.findByUsername(username)
-            .orElseThrow(() -> entityNotFoundExceptionBuilder(User.class, username));
-        Reply reply = replyRepo.findById(id)
-            .orElseThrow(() -> entityNotFoundExceptionBuilder(Reply.class, id));
+        User user = userService.findByUsername(username);
+        Reply reply = replyService.findById(id);
 
         replyForm.updateReply(reply);
         reply.setEdited(ZonedDateTime.now());
 
-        return replyRepo.save(reply);
-    }
-
-    private EntityNotFoundException entityNotFoundExceptionBuilder(Class<?> clazz, Object id) {
-        return new EntityNotFoundException(
-            "No entity of type '" + clazz.getSimpleName() + "' with id '" + id + "' found");
+        return replyService.save(reply);
     }
 }
 

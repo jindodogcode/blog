@@ -17,7 +17,7 @@ import dev.mkennedy.blog.entity.UserSecurity;
 import dev.mkennedy.blog.entity.UserSecurity.Role;
 import dev.mkennedy.blog.repository.PostRepository;
 import dev.mkennedy.blog.repository.UserRepository;
-import dev.mkennedy.blog.service.UserTransactionService;
+import dev.mkennedy.blog.service.UserService;
 
 @Component
 @Profile({ "!test", "dev" })
@@ -28,7 +28,7 @@ public class DataLoader implements CommandLineRunner {
     @Autowired
     private UserRepository userRepo;
     @Autowired
-    private UserTransactionService userTransactionService;
+    private UserService userService;
     @Autowired
     private PostRepository postRepo;
     @Autowired
@@ -42,7 +42,7 @@ public class DataLoader implements CommandLineRunner {
         User dog = dogOpt.orElseGet(() -> {
             UserSecurity s = new UserSecurity(passwordEncoder.encode("dogdogdog"), Role.ROLE_USER);
             User u = new User("dog@dog.com", "dog", "Dog", "Doggerton");
-            u = userTransactionService.saveUserAndSecurity(u, s);
+            u = userService.saveUserAndSecurity(u, s);
 
             // geting user again to make sure the security table is properly linked
             u = userRepo.findById(u.getId()).get();
@@ -54,10 +54,11 @@ public class DataLoader implements CommandLineRunner {
         });
 
         Optional<User> catOpt = userRepo.findByUsername("cat");
+        @SuppressWarnings("unused")
         User cat = catOpt.orElseGet(() -> {
             UserSecurity s = new UserSecurity(passwordEncoder.encode("catcatcat"), Role.ROLE_USER);
             User u =  new User("cat@cat.gov", "cat", "Cat", "De Catsville");
-            u = userTransactionService.saveUserAndSecurity(u, s);
+            u = userService.saveUserAndSecurity(u, s);
             u = userRepo.findById(u.getId()).get();
             s = u.getSecurity();
 

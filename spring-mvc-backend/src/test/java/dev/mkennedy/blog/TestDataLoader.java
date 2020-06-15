@@ -3,7 +3,6 @@ package dev.mkennedy.blog;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import dev.mkennedy.blog.entity.UserSecurity.Role;
 import dev.mkennedy.blog.repository.PostRepository;
 import dev.mkennedy.blog.repository.ReplyRepository;
 import dev.mkennedy.blog.repository.UserRepository;
-import dev.mkennedy.blog.service.UserTransactionService;
+import dev.mkennedy.blog.service.UserService;
 
 @Component
 @Profile("test")
@@ -30,7 +29,7 @@ public class TestDataLoader implements CommandLineRunner {
     @Autowired
     private UserRepository userRepo;
     @Autowired
-    private UserTransactionService userTransactionService;
+    private UserService userService;
     @Autowired
     private PostRepository postRepo;
     @Autowired
@@ -49,7 +48,7 @@ public class TestDataLoader implements CommandLineRunner {
             new User("updateuser@example.com", "updateuser", "Update", "User")
         );
 
-        users.forEach(user -> userTransactionService.saveUserAndSecurity(
+        users.forEach(user -> userService.saveUserAndSecurity(
                     user,
                     new UserSecurity(passwordEncoder.encode("password"), Role.ROLE_USER)));
         User userOne = userRepo.findByUsername("userone").get();
