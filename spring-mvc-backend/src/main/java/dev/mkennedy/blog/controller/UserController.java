@@ -24,8 +24,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AuthorizationServiceException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -66,7 +64,7 @@ public class UserController {
     @GetMapping("/{username}")
     public User getUserByUsername(@PathVariable("username") String username) {
         User user = userRepo.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> entityNotFoundExceptionBuilder(User.class, username));
 
         return user;
     }
@@ -75,7 +73,7 @@ public class UserController {
     public User updateUserByUsername(@PathVariable("username") String username,
             @Valid @RequestBody UpdateUserForm userForm) {
         User user = userRepo.findByUsername(username)
-            .orElseThrow(() -> usernameNotFoundExceptionBuilder(username));
+            .orElseThrow(() -> entityNotFoundExceptionBuilder(User.class, username));
 
         userForm.updateUser(user);
 
@@ -87,7 +85,7 @@ public class UserController {
     public void deleteUserByUsername(@PathVariable("username") String username,
             HttpServletResponse response) throws IOException {
         User user = userRepo.findByUsername(username)
-            .orElseThrow(() -> usernameNotFoundExceptionBuilder(username));
+            .orElseThrow(() -> entityNotFoundExceptionBuilder(User.class, username));
         userService.delete(user);
     }
 
@@ -96,7 +94,7 @@ public class UserController {
     public Post addUserPost(@PathVariable("username") String username,
             @Valid @RequestBody NewPostForm postForm) {
         User user = userRepo.findByUsername(username).orElseThrow(
-                () -> usernameNotFoundExceptionBuilder(username));
+                () -> entityNotFoundExceptionBuilder(User.class, username));
         Post post = postForm.toPost(user);
         Post saved = postRepo.save(post);
 
@@ -116,7 +114,11 @@ public class UserController {
                 required = false,
                 defaultValue = PagingDefaults.PAGESIZE
             ) int pageSize) {
+        @SuppressWarnings("unused")
+        User _user = userRepo.findByUsername(username).orElseThrow(
+                () -> entityNotFoundExceptionBuilder(User.class, username));
         Pageable pageable = PageRequest.of(page, pageSize);
+        
         return postRepo.findAllByUsername(username, pageable);
     }
 
@@ -124,14 +126,11 @@ public class UserController {
     public Post updateUserPost(@PathVariable("username") String username,
             @PathVariable("id") Long id,
             @Valid @RequestBody UpdatePostForm postForm) {
+        @SuppressWarnings("unused")
         User user = userRepo.findByUsername(username)
-            .orElseThrow(() -> usernameNotFoundExceptionBuilder(username));
+            .orElseThrow(() -> entityNotFoundExceptionBuilder(User.class, username));
         Post post = postRepo.findById(id)
             .orElseThrow(() -> entityNotFoundExceptionBuilder(Post.class, id));
-
-        if (!post.getUser().equals(user)) {
-            throw new AuthorizationServiceException("not authorized to edit that post");
-        }
 
         postForm.updatePost(post);
         post.setEdited(ZonedDateTime.now());
@@ -145,7 +144,7 @@ public class UserController {
             @PathVariable("username") String username,
             @Valid @RequestBody NewReplyForm replyForm) {
         User user = userRepo.findByUsername(username)
-            .orElseThrow(() -> usernameNotFoundExceptionBuilder(username));
+            .orElseThrow(() -> entityNotFoundExceptionBuilder(User.class, username));
         Post post = postRepo.findById(replyForm.getPostId())
             .orElseThrow(() -> entityNotFoundExceptionBuilder(Post.class, replyForm.getPostId()));
         Reply repliedTo;
@@ -177,6 +176,9 @@ public class UserController {
                 required = false,
                 defaultValue = PagingDefaults.PAGESIZE
             ) int pageSize) {
+        @SuppressWarnings("unused")
+        User user = userRepo.findByUsername(username)
+            .orElseThrow(() -> entityNotFoundExceptionBuilder(User.class, username));
         Pageable pageable = PageRequest.of(page, pageSize);
 
         return replyRepo.findByUsername(username, pageable);
@@ -187,14 +189,11 @@ public class UserController {
             @PathVariable("username") String username,
             @PathVariable("id") long id,
             @Valid @RequestBody UpdateReplyForm replyForm) {
+        @SuppressWarnings("unused")
         User user = userRepo.findByUsername(username)
-            .orElseThrow(() -> usernameNotFoundExceptionBuilder(username));
+            .orElseThrow(() -> entityNotFoundExceptionBuilder(User.class, username));
         Reply reply = replyRepo.findById(id)
             .orElseThrow(() -> entityNotFoundExceptionBuilder(Reply.class, id));
-
-        if (!reply.getUser().equals(user)) {
-            throw new AuthorizationServiceException("not authorized to edit that reply");
-        }
 
         replyForm.updateReply(reply);
         reply.setEdited(ZonedDateTime.now());
@@ -202,13 +201,9 @@ public class UserController {
         return replyRepo.save(reply);
     }
 
-    private UsernameNotFoundException usernameNotFoundExceptionBuilder(String username) {
-        return new UsernameNotFoundException("username " + username + " not found");
-    }
-
     private EntityNotFoundException entityNotFoundExceptionBuilder(Class<?> clazz, Object id) {
         return new EntityNotFoundException(
-            "no entity of type " + clazz.getSimpleName() + " with id " + id + " found");
+            "No entity of type '" + clazz.getSimpleName() + "' with id '" + id + "' found");
     }
 }
 
