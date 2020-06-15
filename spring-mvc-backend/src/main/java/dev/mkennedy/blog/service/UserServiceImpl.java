@@ -1,5 +1,6 @@
 package dev.mkennedy.blog.service;
 
+import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,7 @@ import dev.mkennedy.blog.repository.UserRepository;
 import dev.mkennedy.blog.repository.UserSecurityRepository;
 
 @Service
-@Transactional
-public class UserTransactionService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepo;
@@ -22,6 +22,13 @@ public class UserTransactionService {
     @Autowired
     private PasswordEncoder encoder;
 
+    @Override
+    public User save(User user) {
+        return userRepo.save(user);
+    }
+
+    @Override
+    @Transactional
     public User saveUserAndSecurity(User user, UserSecurity security) {
         user.setSecurity(null);
         User saved = userRepo.save(user);
@@ -31,6 +38,8 @@ public class UserTransactionService {
         return saved;
     }
 
+    @Override
+    @Transactional
     public User saveNewUser(NewUserForm newUserForm) {
         User user = newUserForm.toUser(encoder, Role.ROLE_USER);
         UserSecurity security = user.getSecurity();
@@ -42,6 +51,14 @@ public class UserTransactionService {
         return saved;
     }
 
+    @Override
+    public User findByUsername(String username) {
+        return userRepo.findByUsername(username)
+            .orElseThrow(() -> new EntityNotFoundException("Username: " + username + " not found"));
+    }
+
+    @Override
+    @Transactional
     public void delete(User user) {
         UserSecurity security = user.getSecurity();
         userSecurityRepo.delete(security);
