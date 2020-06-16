@@ -93,15 +93,18 @@ public class UserController {
                 required = false,
                 defaultValue = PagingDefaults.PAGESIZE
             ) int pageSize) {
+        // check that User with username exists
         userService.findByUsername(username);
         
         return postService.findAllByUsername(username, page, pageSize);
     }
 
     @PatchMapping("/{username}/posts/{id}")
-    public Post updateUserPost(@PathVariable("username") String username,
+    public Post updateUserPost(
+            @PathVariable("username") String username,
             @PathVariable("id") Long id,
             @Valid @RequestBody UpdatePostForm postForm) {
+        // check that User with username exists
         userService.findByUsername(username);
         Post post = postService.findById(id);
 
@@ -146,6 +149,7 @@ public class UserController {
                 required = false,
                 defaultValue = PagingDefaults.PAGESIZE
             ) int pageSize) {
+        // check that User with username exists
         userService.findByUsername(username);
 
         return replyService.findAllByUsername(username, page, pageSize);
@@ -156,6 +160,7 @@ public class UserController {
             @PathVariable("username") String username,
             @PathVariable("id") long id,
             @Valid @RequestBody UpdateReplyForm replyForm) {
+        // check that User with username exists
         userService.findByUsername(username);
         Reply reply = replyService.findById(id);
 

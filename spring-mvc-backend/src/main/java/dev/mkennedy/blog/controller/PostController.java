@@ -55,7 +55,7 @@ public class PostController {
                 required = false,
                 defaultValue = PagingDefaults.PAGESIZE
             ) int pageSize) {
-
+        // check that Post with id exists
         postService.findById(id);
 
         return replyService.findAllByPostId(id, page, pageSize);
