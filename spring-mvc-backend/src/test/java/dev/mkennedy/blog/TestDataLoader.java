@@ -21,7 +21,7 @@ import dev.mkennedy.blog.repository.UserRepository;
 import dev.mkennedy.blog.service.UserService;
 
 @Component
-@Profile({ "posttest", "usertest" })
+@Profile({ "posttest", "usertest", "replytest" })
 public class TestDataLoader implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DataLoader.class);
@@ -48,31 +48,33 @@ public class TestDataLoader implements CommandLineRunner {
             new User("updateuser@example.com", "updateuser", "Update", "User")
         );
 
-        users.forEach(user -> userService.saveUserAndSecurity(
-                    user,
-                    new UserSecurity(passwordEncoder.encode("password"), Role.ROLE_USER)));
+        users.stream().map(user -> userService.saveUserAndSecurity(
+                    user, new UserSecurity(passwordEncoder.encode("password"), Role.ROLE_USER)))
+            .forEach(user -> logPersist("User", user));
         User userOne = userRepo.findByUsername("userone").get();
         User userTwo = userRepo.findByUsername("usertwo").get();
 
         log.info("Initializing posts");
 
-        List<Post> posts = new ArrayList<>();
-        postRepo.findAllByUsername("userone").forEach(posts::add);
-        if (posts.isEmpty()) {
-            posts = Arrays.asList(
+        List<Post> posts = Arrays.asList(
                 new Post("I had a great day", "it was really good", userOne),
-                new Post("Something", "Something something something.", userOne)
-            );
-            postRepo.saveAll(posts).forEach(p -> logPersist("Post", p));
-        }
+                new Post("Something", "Something something something.", userOne));
+        postRepo.saveAll(posts).forEach(p -> logPersist("Post", p));
+
+        log.info("Initializing Replies");
 
         Post userOnePost = postRepo.findAllByUser(userOne).iterator().next();
         Reply userTwoReply = new Reply("Something something something", userTwo);
         userTwoReply.setPost(userOnePost);
-        replyRepo.save(userTwoReply);
+        userTwoReply = replyRepo.save(userTwoReply);
+        logPersist("Reply", userTwoReply);
+        Reply userOneReply = new Reply("Interesting", userOne);
+        userOneReply.setPost(userOnePost);
+        userOneReply.setReply(userTwoReply);
+        userOneReply = replyRepo.save(userOneReply);
     }
 
     private void logPersist(String itemType, Object item) {
-        log.info(itemType + " created:\n" + item);
+        log.info('\n' + itemType + " created:\n" + item);
     }
 }
