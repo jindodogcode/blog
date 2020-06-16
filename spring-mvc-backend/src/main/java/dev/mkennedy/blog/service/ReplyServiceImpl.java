@@ -29,8 +29,15 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
+    public Page<Reply> findAllRecent(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.DESC, "created"));
+
+        return replyRepo.findAll(pageable);
+    }
+
+    @Override
     public Page<Reply> findAllByPostId(long id, int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.ASC, "created"));
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.DESC, "created"));
 
         return replyRepo.findAllByPostId(id, pageable);
     }
@@ -40,5 +47,12 @@ public class ReplyServiceImpl implements ReplyService {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.DESC, "created"));
 
         return replyRepo.findAllByUsername(username, pageable);
+    }
+
+    @Override
+    public Page<Reply> findAllByReplyId(long id, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.DESC, "created"));
+
+        return replyRepo.findAllByReplyId(id, pageable);
     }
 }
