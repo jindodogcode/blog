@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@ActiveProfiles({ "usertest", "test" })
 public class UserControllerTest {
 
     private static final Logger log = LoggerFactory.getLogger(UserControllerTest.class);
