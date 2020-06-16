@@ -93,7 +93,7 @@ public class PostControllerTest {
     }
 
     @Test
-    void getPostRepliesTest() throws Exception {
+    void getPostRepliesSuccessTest() throws Exception {
         URI uri = URI.create(base.toString() + "/posts/1/replies");
         RequestEntity<Void> request = RequestEntity.get(uri).build();
         ParameterizedTypeReference<PageableResponse<Post>> type =
@@ -107,8 +107,6 @@ public class PostControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         PageableResponse<Post> body = response.getBody();
         assertThat(body.isEmpty()).isEqualTo(false);
-        assertThat(body.getContent().get(0).getContent())
-            .isEqualTo("Something something something");
     }
 
     @Test
