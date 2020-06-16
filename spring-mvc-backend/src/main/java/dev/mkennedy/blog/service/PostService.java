@@ -1,14 +1,15 @@
 package dev.mkennedy.blog.service;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import dev.mkennedy.blog.entity.Post;
 
 public interface PostService {
     
     public Post save(Post post);
 
-    public Post findById(Long id);
+    public Post findById(long id);
 
-    public Page<Post> findAllByUsername(String username, Pageable pageable);
+    public Page<Post> findAllRecent(int page, int pageSize);
+
+    public Page<Post> findAllByUsername(String username, int page, int pageSize);
 }
