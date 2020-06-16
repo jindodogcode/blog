@@ -21,7 +21,7 @@ import dev.mkennedy.blog.repository.UserRepository;
 import dev.mkennedy.blog.service.UserService;
 
 @Component
-@Profile("test")
+@Profile({ "posttest", "usertest" })
 public class TestDataLoader implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DataLoader.class);
