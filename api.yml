@@ -15,6 +15,28 @@ tags:
   - name: reply
     description: Reply routes
 paths:
+  /login:
+    description: >
+      Login portal
+    get:
+      summary: Login
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+  /logout:
+    description: >
+      Logout portal
+    get:
+      summary: Logout
+      responses:
+        '204':
+          description: Logout successful
   /users:
     description: >
       This resource represents the collection of users.
