@@ -315,6 +315,25 @@ public class UserControllerTest {
     }
 
     @Test
+    void addUserPostBadUsernameTest() throws Exception {
+        NewPostForm postForm = new NewPostForm();
+        postForm.setTitle("Something");
+        postForm.setContent("Something something something");
+        URI uri = URI.create(base.toString() + "/users/userwo/posts");
+        RequestEntity<NewPostForm> request = RequestEntity.post(uri)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(postForm);
+
+        ResponseEntity<?> response = template.withBasicAuth("usertwo", "password")
+            .exchange(request, Object.class);
+
+        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        logResponse(response, methodName);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
     void addUserPostValidationTest() throws Exception {
         NewPostForm postForm = new NewPostForm();
         postForm.setTitle("");
