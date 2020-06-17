@@ -517,7 +517,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/content/schemas/Reply'
+                $ref: '#/components/schemas/Reply'
         '404':
           description: Post not found
           content:
@@ -549,7 +549,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/content/schemas/Reply'
+                  $ref: '#/components/schemas/Reply'
   /replies/{id}:
     parameters:
       - name: id
@@ -568,7 +568,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/content/schemas/Reply'
+                $ref: '#/components/schemas/Reply'
         '404':
           description: Reply not found
           content:
