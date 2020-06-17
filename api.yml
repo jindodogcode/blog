@@ -20,6 +20,7 @@ paths:
       Login portal
     get:
       summary: Login
+      operationId: login
       responses:
         '200':
           description: Login successful
@@ -34,6 +35,7 @@ paths:
       Logout portal
     get:
       summary: Logout
+      operationId: logout
       responses:
         '204':
           description: Logout successful
@@ -44,6 +46,7 @@ paths:
       tags:
         - user
       summary: Creates a new user
+      operationId: addUser
       responses:
         '201':
           description: User created successfully
@@ -78,6 +81,7 @@ paths:
       tags:
         - user
       summary: Retreives user information
+      operationId: getUser
       responses:
         '200':
           description: Success
@@ -95,6 +99,7 @@ paths:
       tags:
         - user
       summary: Updates user
+      operationId: updateUser
       security:
         - basicAuth: []      
       responses:
@@ -139,6 +144,7 @@ paths:
       tags:
         - user
       summary: Delete user
+      operationId: deleteUser
       security:
         - basicAuth: []
       responses:
@@ -175,6 +181,7 @@ paths:
         - user
         - post
       summary: Create a new post
+      operationId: addUserPost
       security:
         - basicAuth: []
       responses:
@@ -225,6 +232,7 @@ paths:
           schema:
             type: integer
       summary: Retreive posts by the user specified
+      operationId: getUserPosts
       responses:
         '200':
           description: Success
@@ -258,6 +266,7 @@ paths:
         - user
         - post
       summary: Update post
+      operationId: updateUserPost
       security:
         - basicAuth: []
       responses:
@@ -311,6 +320,7 @@ paths:
         - user
         - reply
       summary: Create a new reply
+      operationId: addUserReply
       security:
         - basicAuth: []
       responses:
@@ -361,6 +371,7 @@ paths:
           schema:
             type: integer
       summary: Retreive replies by specific user
+      operationId: getUserReplies
       responses:
         '200':
           description: Success
@@ -394,6 +405,7 @@ paths:
         - user
         - reply
       summary: Updates a specific reply
+      operationId: updateUserReply
       security:
         - basicAuth: []
       responses:
@@ -451,6 +463,7 @@ paths:
           schema:
             type: integer
       summary: Retreives posts
+      operationId: getPosts
       responses:
         '200':
           description: Success
@@ -473,6 +486,7 @@ paths:
       tags:
         - post
       summary: Retreives a specific post
+      operationId: getPost
       responses:
         '200':
           description: Success
@@ -511,6 +525,7 @@ paths:
           schema:
             type: integer
       summary: Retreive replies
+      operationId: getPostReplies
       responses:
         '200':
           description: Success
@@ -541,6 +556,7 @@ paths:
           schema:
             type: integer
       summary: Retreves replies
+      operationId: getReplies
       responses:
         '200':
           description: Success
@@ -562,6 +578,7 @@ paths:
       tags:
         - reply
       summary: Retreive a specific reply
+      operationId: getReply
       responses:
         '200':
           description: Success
@@ -599,6 +616,7 @@ paths:
           schema:
             type: integer
       summary: Retreives replies
+      operationId: getReplyReplies
       responses:
         '200':
           description: Success
