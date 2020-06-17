@@ -17,8 +17,7 @@ tags:
 paths:
   /users:
     description: >
-      This resource represents an individual user.
-      Each user is identified by their username.
+      This resource represents the collection of users.
     post:
       tags:
         - user
@@ -31,7 +30,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
         '400':
-          description: Failed validation
+          description: Validation error
           content:
             application/json:
               schema:
@@ -44,41 +43,555 @@ paths:
         description: Create a new user
         required: true
   /users/{username}:
-    description:
+    description: >
+      This resource represents an individual user.
+      Each user is identified by their username.
+    parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
     get:
+      tags:
+        - user
+      summary: Retreives user information
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Username not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
     patch:
+      tags:
+        - user
+      summary: Updates user
+      security:
+        - basicAuth: []      
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized to update this content
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden to update this content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Username not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUser'
+        description: Create a new user
+        required: true
     delete:
+      tags:
+        - user
+      summary: Delete user
+      security:
+        - basicAuth: []
+      responses:
+        '204':
+          description: Success
+        '401':
+          description: Unauthorized to delete this user
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden to delete this user
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Username not found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
   /users/{username}/posts:
-    description:
+    description: Represents the collection of post by a specific user
+    parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
     post:
+      tags:
+        - user
+        - post
+      summary: Create a new post
+      security:
+        - basicAuth: []
+      responses:
+        '201':
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: Validation error
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized to post as this user
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden to post as this user
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPost'
+        required: true
+        description: Object representing a new post
     get:
+      tags:
+        - user
+        - post
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: pagesize
+          in: query
+          required: false
+          schema:
+            type: integer
+      summary: Retreive posts by the user specified
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        '404':
+          description: User not found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
   /users/{username}/posts/{id}:
-    description:
+    parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    description: Represents a specific post by a specific user
     patch:
+      tags:
+        - user
+        - post
+      summary: Update post
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: Validation error
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized to update post
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden to update post
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Post not found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePost'
+        required: true
+        description: Object representing the fields to update in the post
   /users/{username}/replies:
-    description:
+    parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+    description: Represents the collection of replies by a specific user
     post:
+      tags:
+        - user
+        - reply
+      summary: Create a new reply
+      security:
+        - basicAuth: []
+      responses:
+        '201':
+          description: Reply created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reply'
+        '400':
+          description: Validation error
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized to create reply
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden to create reply
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewReply'
+        required: true
+        description: Object representing a new reply
     get:
+      tags:
+        - user
+        - reply
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: pagesize
+          in: query
+          required: false
+          schema:
+            type: integer
+      summary: Retreive replies by specific user
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reply'
+        '404':
+          description: User not found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
   /users/{username}/replies/{id}:
-    description:
+    parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    description: Represents a specific reply by a specific user
     patch:
+      tags:
+        - user
+        - reply
+      summary: Updates a specific reply
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reply'
+        '400':
+          description: Validation error
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized to update reply
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden to update reply
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Reply id not found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReply'
+        required: true
+        description: Object containing the fields to update a reply
   /posts:
-    description:
+    description: Represents a collection of posts
     get:
+      tags:
+        - post
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: pagesize
+          in: query
+          required: false
+          schema:
+            type: integer
+      summary: Retreives posts
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+
   /posts/{id}:
-    description:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    description: Represents a specific post
     get:
+      tags:
+        - post
+      summary: Retreives a specific post
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: Post not found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
   /posts/{id}/replies:
-    description:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    description: Represents a collection of replies
     get:
+      tags:
+        - post
+        - reply
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: pagesize
+          in: query
+          required: false
+          schema:
+            type: integer
+      summary: Retreive replies
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/content/schemas/Reply'
+        '404':
+          description: Post not found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
   /replies:
-    description:
+    description: Represents a collection of replies
     get:
+      tags:
+        - reply
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: pagesize
+          in: query
+          required: false
+          schema:
+            type: integer
+      summary: Retreves replies
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/content/schemas/Reply'
   /replies/{id}:
-    description:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    description: Represents a specific reply
     get:
+      tags:
+        - reply
+      summary: Retreive a specific reply
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/content/schemas/Reply'
+        '404':
+          description: Reply not found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
   /replies/{id}/replies:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    description: Represents a collections of replies to a specific reply 
     get:
+      tags:
+        - reply
+        - post
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: pagesize
+          in: query
+          required: false
+          schema:
+            type: integer
+      summary: Retreives replies
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reply'
+        '404':
+          description: Reply not found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
 components:
   schemas:
     User:
@@ -226,44 +739,7 @@ components:
           type: object
         message:
           type: string
-  requestBodies:
-    NewUser:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NewUser'
-      description: Create a new user with this object
-    UpdateUser:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UpdateUser'
-      description: Update a user with this object
-    NewPost:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NewPost'
-      description: Create a new post with this object
-    UpdatePost:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UpdatePost'
-      description: Update a post with this object
-    NewReply:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NewReply'
-      description: Create a new reply with this object
-    UpdateReply:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UpdateReply'
-      description: Update a reply with this object
   securitySchemes:
-    blog_auth:
+    basicAuth:
       type: http
       scheme: basic
