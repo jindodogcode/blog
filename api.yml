@@ -1,0 +1,269 @@
+openapi: 3.0.0
+info:
+  description: This is a simple blog server.
+  version: "1.0.0"
+  title: Blog
+  contact:
+    email: michaeljkennedy@protonmail.com
+servers:
+  - url: "/api/v1"
+tags:
+  - name: user
+    description: User routes
+  - name: post
+    description: Post routes
+  - name: reply
+    description: Reply routes
+paths:
+  /users:
+    description: >
+      This resource represents an individual user.
+      Each user is identified by their username.
+    post:
+      tags:
+        - user
+      summary: Creates a new user
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Failed validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+        description: Create a new user
+        required: true
+  /users/{username}:
+    description:
+    get:
+    patch:
+    delete:
+  /users/{username}/posts:
+    description:
+    post:
+    get:
+  /users/{username}/posts/{id}:
+    description:
+    patch:
+  /users/{username}/replies:
+    description:
+    post:
+    get:
+  /users/{username}/replies/{id}:
+    description:
+    patch:
+  /posts:
+    description:
+    get:
+  /posts/{id}:
+    description:
+    get:
+  /posts/{id}/replies:
+    description:
+    get:
+  /replies:
+    description:
+    get:
+  /replies/{id}:
+    description:
+    get:
+  /replies/{id}/replies:
+    get:
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        created:
+          type: string
+          format: date-time
+        lastLoggedIn:
+          type: string
+          format: date-time
+    NewUser:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        password:
+          type: string
+          format: password
+    UpdateUser:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        content:
+          type: string
+        created:
+          type: string
+          format: date-time
+        edited:
+          type: string
+          format: date-time
+        userId:
+          type: string
+          format: uuid
+    NewPost:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+    UpdatePost:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+    Reply:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        content:
+          type: string
+        created:
+          type: string
+          format: date-time
+        edited:
+          type: string
+          format: date-time
+        userId:
+          type: string
+          format: uuid
+        postId:
+          type: integer
+          format: int64
+        replyId:
+          type: integer
+          format: int64
+    NewReply:
+      type: object
+      properties:
+        content:
+          type: string
+        postId:
+          type: integer
+          format: int64
+        replyId:
+          type: integer
+          format: int64
+    UpdateReply:
+      type: object
+      properties:
+        content:
+          type: string
+    ApiError:
+      type: object
+      properties:
+        status:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        message:
+          type: string
+        debugMessage:
+          type: string
+        subErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubError'
+    SubError:
+      type: object
+      properties:
+        object:
+          type: string
+        field:
+          type: string
+        rejectedValue:
+          type: object
+        message:
+          type: string
+  requestBodies:
+    NewUser:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NewUser'
+      description: Create a new user with this object
+    UpdateUser:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateUser'
+      description: Update a user with this object
+    NewPost:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NewPost'
+      description: Create a new post with this object
+    UpdatePost:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdatePost'
+      description: Update a post with this object
+    NewReply:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NewReply'
+      description: Create a new reply with this object
+    UpdateReply:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateReply'
+      description: Update a reply with this object
+  securitySchemes:
+    blog_auth:
+      type: http
+      scheme: basic
