@@ -1,3 +1,6 @@
+### Generator Config ###
+.js-generator-config.json
+
 ### Database files ###
 .data/
 
