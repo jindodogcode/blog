@@ -1,5 +1,5 @@
 ### Generator Config ###
-.js-generator-config.json
+.js-gen-config.json
 
 ### Database files ###
 .data/
