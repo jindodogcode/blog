@@ -2,6 +2,9 @@
 .npmignore
 .js-gen-config.json
 
+### Generated Client Code ###
+js-client/
+
 ### Database files ###
 .data/
 
