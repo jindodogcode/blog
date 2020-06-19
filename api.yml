@@ -1,12 +1,12 @@
 openapi: 3.0.0
 info:
-  description: This is a simple blog server.
+  description: "This is a simple blog api."
   version: "1.0.0"
-  title: Blog
+  title: Blog Api
   contact:
     email: michaeljkennedy@protonmail.com
 servers:
-  - url: "/api/v1"
+  - url: "http://localhost:8080/api/v1"
 tags:
   - name: user
     description: User routes
@@ -21,9 +21,19 @@ paths:
     get:
       summary: Login
       operationId: login
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Login successful
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -56,6 +66,12 @@ paths:
                 $ref: '#/components/schemas/User'
         '400':
           description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: Email address or usname already in database
           content:
             application/json:
               schema:
@@ -102,6 +118,11 @@ paths:
       operationId: updateUser
       security:
         - basicAuth: []      
+      parameters:
+        - name: jsessionid
+          in: cookie
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -147,6 +168,11 @@ paths:
       operationId: deleteUser
       security:
         - basicAuth: []
+      parameters:
+        - name: jsessionid
+          in: cookie
+          schema:
+            type: string
       responses:
         '204':
           description: Success
@@ -184,6 +210,11 @@ paths:
       operationId: addUserPost
       security:
         - basicAuth: []
+      parameters:
+        - name: jsessionid
+          in: cookie
+          schema:
+            type: string
       responses:
         '201':
           description: Post created
@@ -220,6 +251,8 @@ paths:
       tags:
         - user
         - post
+      summary: Retreive posts by the user specified
+      operationId: getUserPosts
       parameters:
         - name: page
           in: query
@@ -231,17 +264,13 @@ paths:
           required: false
           schema:
             type: integer
-      summary: Retreive posts by the user specified
-      operationId: getUserPosts
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Post'
+                $ref: '#/components/schemas/PageablePosts'
         '404':
           description: User not found
           content:
@@ -269,6 +298,11 @@ paths:
       operationId: updateUserPost
       security:
         - basicAuth: []
+      parameters:
+        - name: jsessionid
+          in: cookie
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -323,6 +357,11 @@ paths:
       operationId: addUserReply
       security:
         - basicAuth: []
+      parameters:
+        - name: jsessionid
+          in: cookie
+          schema:
+            type: string
       responses:
         '201':
           description: Reply created
@@ -359,6 +398,8 @@ paths:
       tags:
         - user
         - reply
+      summary: Retreive replies by specific user
+      operationId: getUserReplies
       parameters:
         - name: page
           in: query
@@ -370,17 +411,13 @@ paths:
           required: false
           schema:
             type: integer
-      summary: Retreive replies by specific user
-      operationId: getUserReplies
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Reply'
+                $ref: '#/components/schemas/PageableReplies'
         '404':
           description: User not found
           content:
@@ -408,6 +445,11 @@ paths:
       operationId: updateUserReply
       security:
         - basicAuth: []
+      parameters:
+        - name: jsessionid
+          in: cookie
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -451,6 +493,8 @@ paths:
     get:
       tags:
         - post
+      summary: Retreives posts
+      operationId: getPosts
       parameters:
         - name: page
           in: query
@@ -462,17 +506,13 @@ paths:
           required: false
           schema:
             type: integer
-      summary: Retreives posts
-      operationId: getPosts
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Post'
+                $ref: '#/components/schemas/PageablePosts'
 
   /posts/{id}:
     parameters:
@@ -513,6 +553,8 @@ paths:
       tags:
         - post
         - reply
+      summary: Retreive replies
+      operationId: getPostReplies
       parameters:
         - name: page
           in: query
@@ -524,8 +566,6 @@ paths:
           required: false
           schema:
             type: integer
-      summary: Retreive replies
-      operationId: getPostReplies
       responses:
         '200':
           description: Success
@@ -544,6 +584,8 @@ paths:
     get:
       tags:
         - reply
+      summary: Retreves replies
+      operationId: getReplies
       parameters:
         - name: page
           in: query
@@ -555,17 +597,13 @@ paths:
           required: false
           schema:
             type: integer
-      summary: Retreves replies
-      operationId: getReplies
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Reply'
+                $ref: '#/components/schemas/PageableReplies'
   /replies/{id}:
     parameters:
       - name: id
@@ -604,6 +642,8 @@ paths:
       tags:
         - reply
         - post
+      summary: Retreives replies
+      operationId: getReplyReplies
       parameters:
         - name: page
           in: query
@@ -615,17 +655,13 @@ paths:
           required: false
           schema:
             type: integer
-      summary: Retreives replies
-      operationId: getReplyReplies
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Reply'
+                $ref: '#/components/schemas/PageableReplies'
         '404':
           description: Reply not found
           content:
@@ -634,6 +670,30 @@ paths:
                 $ref: '#/components/schemas/ApiError'
 components:
   schemas:
+    Sort:
+      type: object
+      properties:
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+        empty:
+          type: boolean
+    Pageable:
+      type: object
+      properties:
+        sort:
+          $ref: '#/components/schema/Sort'
+        offset:
+          type: integer
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
     User:
       type: object
       properties:
@@ -655,6 +715,33 @@ components:
         lastLoggedIn:
           type: string
           format: date-time
+    PageableUsers:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schema/User'
+        pageable:
+          $ref: '#/components/schema/Pageable'
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+        last:
+          type: boolean
+        size:
+          type: integer
+        number:
+          type: integer
+        sort:
+          $ref: '#/components/schema/Sort'
+        first:
+          type: boolean
+        numberOfElements:
+          type: integer
+        empty:
+          type: boolean
     NewUser:
       type: object
       properties:
@@ -670,6 +757,12 @@ components:
         password:
           type: string
           format: password
+      required:
+        - email
+        - username
+        - firstName
+        - lastName
+        - password
     UpdateUser:
       type: object
       properties:
@@ -680,6 +773,10 @@ components:
           type: string
         lastName:
           type: string
+      required:
+        - email
+        - firstName
+        - lastName
     Post:
       type: object
       properties:
@@ -699,6 +796,33 @@ components:
         userId:
           type: string
           format: uuid
+    PageablePosts:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schema/Post'
+        pageable:
+          $ref: '#/components/schema/Pageable'
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+        last:
+          type: boolean
+        size:
+          type: integer
+        number:
+          type: integer
+        sort:
+          $ref: '#/components/schema/Sort'
+        first:
+          type: boolean
+        numberOfElements:
+          type: integer
+        empty:
+          type: boolean
     NewPost:
       type: object
       properties:
@@ -706,6 +830,9 @@ components:
           type: string
         content:
           type: string
+      required:
+        - title
+        - content
     UpdatePost:
       type: object
       properties:
@@ -713,6 +840,9 @@ components:
           type: string
         content:
           type: string
+      required:
+        - title
+        - content
     Reply:
       type: object
       properties:
@@ -736,6 +866,33 @@ components:
         replyId:
           type: integer
           format: int64
+    PageableReplies:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schema/Reply'
+        pageable:
+          $ref: '#/components/schema/Pageable'
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+        last:
+          type: boolean
+        size:
+          type: integer
+        number:
+          type: integer
+        sort:
+          $ref: '#/components/schema/Sort'
+        first:
+          type: boolean
+        numberOfElements:
+          type: integer
+        empty:
+          type: boolean
     NewReply:
       type: object
       properties:
@@ -747,11 +904,16 @@ components:
         replyId:
           type: integer
           format: int64
+      required:
+        - content
+        - postId
     UpdateReply:
       type: object
       properties:
         content:
           type: string
+      required:
+        - content
     ApiError:
       type: object
       properties:
@@ -781,5 +943,6 @@ components:
           type: string
   securitySchemes:
     basicAuth:
-      type: http
-      scheme: basic
+      type: apiKey
+      in: cookie
+      name: JSESSIONID
