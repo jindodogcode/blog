@@ -1,7 +1,6 @@
 package dev.mkennedy.blog.entity;
 
 import java.time.ZonedDateTime;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -55,10 +54,10 @@ public class Reply {
         this.created = ZonedDateTime.now();
     }
 
-    @JsonGetter("userId")
-    protected UUID getUserId() {
+    @JsonGetter("username")
+    protected String getUsername() {
         if (user != null)
-            return user.getId();
+            return user.getUsername();
 
         return null;
     }

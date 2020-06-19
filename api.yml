@@ -793,9 +793,8 @@ components:
         edited:
           type: string
           format: date-time
-        userId:
+        username:
           type: string
-          format: uuid
     PageablePosts:
       type: object
       properties:
@@ -857,9 +856,8 @@ components:
         edited:
           type: string
           format: date-time
-        userId:
+        username:
           type: string
-          format: uuid
         postId:
           type: integer
           format: int64
