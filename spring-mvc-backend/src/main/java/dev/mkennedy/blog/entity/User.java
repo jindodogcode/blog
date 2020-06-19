@@ -19,6 +19,7 @@ public class User {
 
     @Id
     @Column(name = "id")
+    @JsonIgnore
     private UUID id;
     @Column(name = "email", nullable = false, unique = true)
     private String email;
