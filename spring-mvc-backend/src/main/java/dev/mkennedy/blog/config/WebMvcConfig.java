@@ -16,5 +16,4 @@ public class WebMvcConfig implements WebMvcConfigurer {
             .allowedOrigins("http://localhost:8081")
             .allowCredentials(true);
     }
-
 }
