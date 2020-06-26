@@ -57,7 +57,7 @@ const routes = [
 const originalPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(() => {
-    store.dispatch("resetAppState");
+    store.dispatch("resetUI");
   });
 };
 
@@ -68,7 +68,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((_to, _from, next) => {
-  store.dispatch("resetAppState");
+  store.dispatch("resetUI");
   next();
 });
 

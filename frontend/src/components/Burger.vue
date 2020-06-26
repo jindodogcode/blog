@@ -2,9 +2,9 @@
   <div
     @click="$emit('click')"
     :class="{
-      'burger-close': !appState.mobile.burgerOpen,
-      'burger-open': appState.mobile.burgerOpen && !largeHistory(),
-      'burger-arrow': appState.mobile.burgerOpen && largeHistory(),
+      'burger-close': !ui.mobile.burgerOpen,
+      'burger-open': ui.mobile.burgerOpen && !largeHistory(),
+      'burger-arrow': ui.mobile.burgerOpen && largeHistory(),
     }"
     class="burger space-y-1"
   >
@@ -20,11 +20,11 @@ import { mapGetters } from "vuex";
 export default {
   name: "Burger",
   computed: {
-    ...mapGetters(["appState"]),
+    ...mapGetters(["ui"]),
   },
   methods: {
     largeHistory: function() {
-      return this.appState.mobile.menuHistory.length > 1;
+      return this.ui.mobile.menuHistory.length > 1;
     },
   },
 };

@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import appState from "./modules/appState";
+import ui from "./modules/ui";
 import principal from "./modules/principal";
 import users from "./modules/users";
 import posts from "./modules/posts";
@@ -13,7 +13,7 @@ export default new Vuex.Store({
   mutations: {},
   actions: {},
   modules: {
-    appState,
+    ui,
     principal,
     users,
     posts,

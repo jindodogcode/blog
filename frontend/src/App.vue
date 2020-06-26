@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="relative z-0 p-4 mx-auto max-w-screen-lg">
-    <header-bar v-if="appState.largeScreen" />
+    <header-bar v-if="ui.largeScreen" />
     <mobile-header-bar v-else />
     <main class="relative px-4 mx-auto max-w-screen-lg">
       <router-view class="mt-8" />
@@ -20,7 +20,7 @@ export default {
     MobileHeaderBar,
   },
   computed: {
-    ...mapGetters(["appState"]),
+    ...mapGetters(["ui"]),
   },
   methods: {
     handleResize: function() {

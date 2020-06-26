@@ -1,10 +1,10 @@
 <template>
-  <div :class="{ 'menu-open': appState.mobile.burgerOpen }" class="bg-white">
+  <div :class="{ 'menu-open': ui.mobile.burgerOpen }" class="bg-white">
     <header class="header">
       <burger @click="handleBurgerClick()" />
     </header>
     <component
-      v-if="appState.mobile.burgerOpen"
+      v-if="ui.mobile.burgerOpen"
       :class="currentStyle"
       :is="currentComponent"
     ></component>
@@ -30,9 +30,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["appState"]),
+    ...mapGetters(["ui"]),
     currentComponent: function() {
-      return this.appState.mobile.menuHistory.slice(-1)[0];
+      return this.ui.mobile.menuHistory.slice(-1)[0];
     },
     currentStyle: function() {
       if (this.currentComponent === NavBar) {
@@ -44,18 +44,18 @@ export default {
   },
   methods: {
     handleBurgerClick: function() {
-      if (this.appState.mobile.menuHistory.length > 1) {
-        if (this.appState.mobile.menuHistory.slice(-1)[0] === LoginForm) {
+      if (this.ui.mobile.menuHistory.length > 1) {
+        if (this.ui.mobile.menuHistory.slice(-1)[0] === LoginForm) {
           this.$store.dispatch("setLoginFormOpen", false);
         }
         this.$store.dispatch("popMenuHistory");
-      } else if (this.appState.mobile.menuHistory.length === 1) {
+      } else if (this.ui.mobile.menuHistory.length === 1) {
         this.$store.dispatch("toggleBurgerOpen");
       }
     },
   },
   watch: {
-    "appState.loginFormOpen": function(isOpen) {
+    "ui.loginFormOpen": function(isOpen) {
       if (isOpen === true) {
         this.$store.dispatch("pushMenuHistory", LoginForm);
       }

@@ -5,7 +5,7 @@
     </header>
     <div class="relative">
       <popup-container
-        v-if="appState.loginFormOpen"
+        v-if="ui.loginFormOpen"
         @closePopup="handleLoginClosePopup()"
         class="absolute top-0 right-0 z-50 border shadow"
       >
@@ -29,7 +29,7 @@ export default {
     LoginForm,
   },
   computed: {
-    ...mapGetters(["appState"]),
+    ...mapGetters(["ui"]),
   },
   methods: {
     handleLoginClosePopup: function() {

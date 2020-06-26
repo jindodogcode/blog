@@ -25,7 +25,7 @@ const mutations = {
   REMOVE_MENU_HISTORY(state) {
     state.mobile.menuHistory.pop();
   },
-  RESET_APP_STATE(state) {
+  RESET_UI(state) {
     state.loginFormOpen = false;
     state.mobile.burgerOpen = false;
     state.mobile.menuHistory = [NavBar];
@@ -114,22 +114,22 @@ const actions = {
    *
    * @param {Function} commit
    */
-  resetAppState({ commit }) {
-    commit("RESET_APP_STATE");
+  resetUI({ commit }) {
+    commit("RESET_UI");
   },
 };
 
 const getters = {
-  appState(state) {
+  ui(state) {
     return state;
   },
 };
 
-const appState = {
+const ui = {
   state,
   mutations,
   actions,
   getters,
 };
 
-export default appState;
+export default ui;
