@@ -1,32 +1,66 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+  <div id="app" class="relative z-0 p-4 mx-auto max-w-screen-lg">
+    <header-bar v-if="appState.largeScreen" />
+    <mobile-header-bar v-else />
+    <main class="relative px-4 mx-auto max-w-screen-lg">
+      <router-view class="mt-8" />
+    </main>
   </div>
 </template>
 
-<style>
+<script>
+import { mapGetters } from "vuex";
+import HeaderBar from "@/components/HeaderBar.vue";
+import MobileHeaderBar from "@/components/MobileHeaderBar.vue";
+
+export default {
+  name: "App",
+  components: {
+    HeaderBar,
+    MobileHeaderBar,
+  },
+  computed: {
+    ...mapGetters(["appState"]),
+  },
+  methods: {
+    handleResize: function() {
+      if (window.innerWidth >= 1024) {
+        this.$store.dispatch("setLargeScreen", true);
+      } else {
+        this.$store.dispatch("setLargeScreen", false);
+      }
+    },
+  },
+  mounted: async function() {
+    this.$store.dispatch("me");
+    this.handleResize();
+    window.addEventListener("resize", this.handleResize);
+  },
+  beforeDestroy: function() {
+    window.removeEventListener("resize", this.handleResize);
+  },
+};
+</script>
+
+<style lang="postcss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
 }
 
-#nav {
-  padding: 30px;
+.link {
+  @apply text-blue-400;
+}
+</style>
+
+<style lang="postcss" scoped>
+.login-form {
+  @apply absolute bg-white w-full top-0 right-0 h-full w-full;
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+@media (min-width: 1024px) {
+  .login-form {
+    @apply w-auto h-auto border;
+  }
 }
 </style>

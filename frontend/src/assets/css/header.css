@@ -1,0 +1,27 @@
+.header {
+  @apply flex justify-end p-4;
+}
+
+.header a,
+.header button {
+  @apply mx-4 font-bold text-gray-800;
+}
+
+.header a:hover,
+.header button:hover {
+  @apply text-blue-400;
+}
+
+.navbar a,
+.navbar button {
+  @apply mx-4 font-bold text-gray-800;
+}
+
+.navbar a:hover,
+.navbar button:hover {
+  @apply text-blue-400;
+}
+
+.navbar a.router-link-exact-active {
+  @apply text-green-400;
+}

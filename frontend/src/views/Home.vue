@@ -1,18 +1,22 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <post-viewer :posts="sortedPosts" />
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import PostViewer from "@/components/PostViewer.vue";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
-    HelloWorld
-  }
-}
+    PostViewer,
+  },
+  computed: {
+    sortedPosts: function() {
+      const posts = this.$store.getters.posts;
+      return Object.values(posts).sort((a, b) => b.created - a.created);
+    },
+  },
+};
 </script>

@@ -18,27 +18,27 @@ import {
   UpdateReply,
 } from "@jindodog/blog-client";
 
-let apiClient = new ApiClient();
+const apiClient = new ApiClient();
 apiClient.enableCookies = true;
 
-let defaultApi = new DefaultApi(apiClient);
-let userApi = new UserApi(apiClient);
-let postApi = new PostApi(apiClient);
-let replyApi = new ReplyApi(apiClient);
+const defaultApi = new DefaultApi(apiClient);
+const userApi = new UserApi(apiClient);
+const postApi = new PostApi(apiClient);
+const replyApi = new ReplyApi(apiClient);
 
-let model = {
+const model = {
   User,
   Post,
   Reply,
 };
 
-let pages = {
+const pages = {
   PageableUsers,
   PageablePosts,
   PageableReplies,
 };
 
-let forms = {
+const forms = {
   new: {
     NewUser,
     NewPost,

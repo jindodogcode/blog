@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import appState from "./modules/appState";
 import principal from "./modules/principal";
+import users from "./modules/users";
 import posts from "./modules/posts";
 import replies from "./modules/replies";
 
@@ -14,6 +15,7 @@ export default new Vuex.Store({
   modules: {
     appState,
     principal,
+    users,
     posts,
     replies,
   },

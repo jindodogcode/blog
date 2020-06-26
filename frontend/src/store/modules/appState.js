@@ -1,23 +1,34 @@
+import NavBar from "@/components/NavBar.vue";
+
 const state = {
   largeScreen: false,
-  burgerOpen: false,
   loginFormOpen: false,
+  mobile: {
+    burgerOpen: false,
+    menuHistory: [NavBar],
+  },
 };
 
 const mutations = {
   UPDATE_LARGE_SCREEN(state, payload) {
     state.largeScreen = payload;
   },
-  UPDATE_BURGER_OPEN(state, payload) {
-    state.burgerOpen = payload;
-  },
   UPDATE_LOGIN_FORM_OPEN(state, payload) {
     state.loginFormOpen = payload;
   },
+  UPDATE_BURGER_OPEN(state, payload) {
+    state.mobile.burgerOpen = payload;
+  },
+  ADD_MENU_HISTORY(state, payload) {
+    state.mobile.menuHistory.push(payload);
+  },
+  REMOVE_MENU_HISTORY(state) {
+    state.mobile.menuHistory.pop();
+  },
   RESET_APP_STATE(state) {
-    state.largeScreen = false;
-    state.burgerOpen = false;
     state.loginFormOpen = false;
+    state.mobile.burgerOpen = false;
+    state.mobile.menuHistory = [NavBar];
   },
 };
 
@@ -42,25 +53,6 @@ const actions = {
   },
 
   /**
-   * Toggle vale of burgerOpen
-   *
-   * @param {Object} context
-   */
-  toggleBurgerOpen(context) {
-    context.commit("UPDATE_BURGER_OPEN", !context.state.burgerOpen);
-  },
-
-  /**
-   * Sets value of burgerOpen
-   *
-   * @param {Function} commit
-   * @param {Boolean} isBurgerOpen
-   */
-  setBurgerOpen({ commit }, isBurgerOpen) {
-    commit("UPDATE_BURGER_OPEN", isBurgerOpen);
-  },
-
-  /**
    * Toggle vale of loginFormOpen
    *
    * @param {Object} context
@@ -77,6 +69,44 @@ const actions = {
    */
   setLoginFormOpen({ commit }, isLoginFormOpen) {
     commit("UPDATE_LOGIN_FORM_OPEN", isLoginFormOpen);
+  },
+
+  /**
+   * Toggle vale of burgerOpen
+   *
+   * @param {Object} context
+   */
+  toggleBurgerOpen(context) {
+    context.commit("UPDATE_BURGER_OPEN", !context.state.mobile.burgerOpen);
+  },
+
+  /**
+   * Sets value of burgerOpen
+   *
+   * @param {Function} commit
+   * @param {Boolean} isBurgerOpen
+   */
+  setBurgerOpen({ commit }, isBurgerOpen) {
+    commit("UPDATE_BURGER_OPEN", isBurgerOpen);
+  },
+
+  /**
+   * Add a component to menu history
+   *
+   * @param {Function} commit
+   * @param {Object} component
+   */
+  pushMenuHistory({ commit }, component) {
+    commit("ADD_MENU_HISTORY", component);
+  },
+
+  /**
+   * Remove a component from menu history
+   *
+   * @param {Function} commit
+   */
+  popMenuHistory({ commit }) {
+    commit("REMOVE_MENU_HISTORY");
   },
 
   /**

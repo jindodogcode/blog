@@ -11,7 +11,7 @@ const state = {
 };
 
 const mutations = {
-  UPDATE_PINCIPAL(state, payload) {
+  UPDATE_PRINCIPAL(state, payload) {
     state.username = payload.username;
     state.email = payload.email;
     state.firstName = payload.firstName;
@@ -52,12 +52,28 @@ const actions = {
     )}`;
     try {
       const user = await BlogClient.defaultApi.login(loginStr);
-      commit("UPDATE_PINCIPAL", user);
+      commit("UPDATE_PRINCIPAL", user);
       commit("UPDATE_LOGGED_IN", true);
     } catch (err) {
       console.log(err);
     }
   },
+
+  /**
+   * me
+   *
+   * @param {Function} commit
+   */
+  async me({ commit }) {
+    try {
+      const user = await BlogClient.defaultApi.me();
+      commit("UPDATE_PRINCIPAL", user);
+      commit("UPDATE_LOGGED_IN", true);
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
   /**
    * logout
    *
@@ -71,6 +87,7 @@ const actions = {
       console.log(err);
     }
   },
+
   /**
    * load principal's posts
    *
@@ -91,6 +108,7 @@ const actions = {
       console.log(err);
     }
   },
+
   /**
    * load principal's replies
    *

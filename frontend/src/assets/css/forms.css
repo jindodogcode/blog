@@ -1,0 +1,31 @@
+.form-title {
+  @apply mb-6 text-lg font-bold text-center;
+}
+
+.form-row {
+  @apply mb-4;
+}
+
+.form-row label {
+  @apply font-bold;
+}
+
+.form-row input {
+  @apply py-1 pl-2 border rounded;
+}
+
+.form-row input::placeholder {
+  @apply text-gray-600;
+}
+
+.form-row input:focus {
+  @apply border-orange-400;
+}
+
+.form input[type="submit"] {
+  @apply p-2 mt-2 border rounded;
+}
+
+.form input[type="submit"]:hover {
+  @apply bg-green-200 border-green-600;
+}
