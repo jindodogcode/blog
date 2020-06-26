@@ -1,7 +1,11 @@
 package dev.mkennedy.blog.controller;
 
+import java.time.ZonedDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,8 +38,17 @@ public class PostController {
                 value = "pagesize",
                 required = false,
                 defaultValue = PagingDefaults.PAGESIZE
-            ) int pageSize) {
-        return postService.findAllRecent(page, pageSize);
+            ) int pageSize,
+            @RequestParam(
+                value = "after",
+                required = false
+            ) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime after) {
+        System.out.println(after);
+        if (after == null) {
+            return postService.findAllRecent(page, pageSize);
+        } else {
+            return postService.findByCreatedAfter(after, page, pageSize);
+        }
     }
 
     @GetMapping("/{id}")

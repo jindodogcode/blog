@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -92,11 +94,19 @@ public class UserController {
                 value = "pagesize",
                 required = false,
                 defaultValue = PagingDefaults.PAGESIZE
-            ) int pageSize) {
+            ) int pageSize,
+            @RequestParam(
+                value = "after",
+                required = false
+            ) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime after) {
         // check that User with username exists
         userService.findByUsername(username);
         
-        return postService.findAllByUsername(username, page, pageSize);
+        if (after == null) {
+            return postService.findAllByUsername(username, page, pageSize);
+        } else {
+            return postService.findByUsernameAndCreatedAfter(username, after, page, pageSize);
+        }
     }
 
     @PatchMapping("/{username}/posts/{id}")
