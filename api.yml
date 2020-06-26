@@ -40,6 +40,19 @@ paths:
                 $ref: '#/components/schemas/User'
         '401':
           description: Unauthorized
+  /me:
+    description: >
+      Login using cookie
+    get:
+      summary: Login by cookie
+      operationId: me
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
   /logout:
     description: >
       Logout portal
@@ -264,6 +277,12 @@ paths:
           required: false
           schema:
             type: integer
+        - name: after
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: date-time
       responses:
         '200':
           description: Success
@@ -506,6 +525,12 @@ paths:
           required: false
           schema:
             type: integer
+        - name: after
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
       responses:
         '200':
           description: Success
