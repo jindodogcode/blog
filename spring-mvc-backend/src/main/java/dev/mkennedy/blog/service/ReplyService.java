@@ -1,6 +1,9 @@
 package dev.mkennedy.blog.service;
 
+import java.time.ZonedDateTime;
+
 import org.springframework.data.domain.Page;
+
 import dev.mkennedy.blog.entity.Reply;
 
 public interface ReplyService {
@@ -12,6 +15,8 @@ public interface ReplyService {
     public Page<Reply> findAllRecent(int page, int pageSize);
 
     public Page<Reply> findAllByPostId(long id, int page, int pageSize);
+
+    public Page<Reply> findAllByPostIdAndCreatedAfter(long id, ZonedDateTime after, int page, int pageSize);
 
     public Page<Reply> findAllByUsername(String username, int page, int pageSize);
 

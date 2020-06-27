@@ -1,22 +1,11 @@
 package dev.mkennedy.blog.controller;
 
-import dev.mkennedy.blog.PagingDefaults;
-import dev.mkennedy.blog.entity.Post;
-import dev.mkennedy.blog.entity.Reply;
-import dev.mkennedy.blog.entity.User;
-import dev.mkennedy.blog.model.NewPostForm;
-import dev.mkennedy.blog.model.NewReplyForm;
-import dev.mkennedy.blog.model.NewUserForm;
-import dev.mkennedy.blog.model.UpdatePostForm;
-import dev.mkennedy.blog.model.UpdateReplyForm;
-import dev.mkennedy.blog.model.UpdateUserForm;
-import dev.mkennedy.blog.service.PostService;
-import dev.mkennedy.blog.service.ReplyService;
-import dev.mkennedy.blog.service.UserService;
 import java.io.IOException;
 import java.time.ZonedDateTime;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,6 +21,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import dev.mkennedy.blog.PagingDefaults;
+import dev.mkennedy.blog.entity.Post;
+import dev.mkennedy.blog.entity.Reply;
+import dev.mkennedy.blog.entity.User;
+import dev.mkennedy.blog.model.NewPostForm;
+import dev.mkennedy.blog.model.NewReplyForm;
+import dev.mkennedy.blog.model.NewUserForm;
+import dev.mkennedy.blog.model.UpdatePostForm;
+import dev.mkennedy.blog.model.UpdateReplyForm;
+import dev.mkennedy.blog.model.UpdateUserForm;
+import dev.mkennedy.blog.service.PostService;
+import dev.mkennedy.blog.service.ReplyService;
+import dev.mkennedy.blog.service.UserService;
 
 @RestController
 @RequestMapping(path = "/api/v1/users")

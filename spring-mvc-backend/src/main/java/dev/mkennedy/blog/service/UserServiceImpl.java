@@ -1,10 +1,12 @@
 package dev.mkennedy.blog.service;
 
 import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import dev.mkennedy.blog.entity.User;
 import dev.mkennedy.blog.entity.UserSecurity;
 import dev.mkennedy.blog.entity.UserSecurity.Role;

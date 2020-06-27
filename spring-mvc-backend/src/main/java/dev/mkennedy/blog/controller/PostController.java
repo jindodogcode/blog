@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import dev.mkennedy.blog.PagingDefaults;
 import dev.mkennedy.blog.entity.Post;
 import dev.mkennedy.blog.entity.Reply;
@@ -67,10 +68,18 @@ public class PostController {
                 value = "pagesize",
                 required = false,
                 defaultValue = PagingDefaults.PAGESIZE
-            ) int pageSize) {
+            ) int pageSize,
+            @RequestParam(
+                value = "after",
+                required = false
+            ) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime after) {
         // check that Post with id exists
         postService.findById(id);
 
-        return replyService.findAllByPostId(id, page, pageSize);
+        if (after == null) {
+            return replyService.findAllByPostId(id, page, pageSize);
+        } else {
+            return replyService.findAllByPostIdAndCreatedAfter(id, after, page, pageSize);
+        }
     }
 }

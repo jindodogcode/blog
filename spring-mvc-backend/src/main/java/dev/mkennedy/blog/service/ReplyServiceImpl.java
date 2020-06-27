@@ -1,6 +1,10 @@
 package dev.mkennedy.blog.service;
 
+import java.time.ZonedDateTime;
+
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -8,10 +12,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+
 import dev.mkennedy.blog.entity.Reply;
 import dev.mkennedy.blog.repository.ReplyRepository;
 
 @Service
+@Transactional
 public class ReplyServiceImpl implements ReplyService {
 
     @Autowired
@@ -37,9 +43,16 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     public Page<Reply> findAllByPostId(long id, int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.DESC, "created"));
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.ASC, "created"));
 
         return replyRepo.findAllByPostId(id, pageable);
+    }
+
+    @Override
+    public Page<Reply> findAllByPostIdAndCreatedAfter(long id, ZonedDateTime after, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.ASC, "created"));
+
+        return replyRepo.findAllByPostIdAndCreatedAfter(id, after, pageable);
     }
 
     @Override

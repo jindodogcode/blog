@@ -3,6 +3,7 @@ package dev.mkennedy.blog.service;
 import java.time.ZonedDateTime;
 
 import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,10 +11,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import dev.mkennedy.blog.entity.Post;
 import dev.mkennedy.blog.repository.PostRepository;
 
 @Service
+@Transactional
 public class PostServiceImpl implements PostService {
 
     @Autowired
@@ -51,9 +55,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<Post> findByUsernameAndCreatedAfter(String username, ZonedDateTime created, int page, int pageSize) {
+    public Page<Post> findByUsernameAndCreatedAfter(String username, ZonedDateTime after, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.DESC, "created"));
 
-        return postRepo.findAllByUsernameAndCreatedAfter(username, created, pageable);
+        return postRepo.findAllByUsernameAndCreatedAfter(username, after, pageable);
     }
 }

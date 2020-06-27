@@ -1,6 +1,8 @@
 package dev.mkennedy.blog.entity;
 
 import java.time.ZonedDateTime;
+
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,10 +10,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
+
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
@@ -23,6 +28,7 @@ public class Reply {
     @Column(name = "id")
     private Long id;
     @Column(name = "content", nullable = false)
+    @Lob @Basic(fetch = FetchType.LAZY)
     private String content;
     @Column(name = "created", nullable = false)
     private ZonedDateTime created;
