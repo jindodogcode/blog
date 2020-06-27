@@ -10,7 +10,7 @@
           >{{ post.username }}</router-link
         >
       </span>
-      <p class="text-sm">on {{ post.created.toUTCString() }}</p>
+      <p class="text-sm">on {{ dateToString() }}</p>
     </div>
     <div>
       <span v-html="post.content"></span>
@@ -25,6 +25,21 @@ export default {
     post: {
       type: Object,
       required: true,
+    },
+  },
+  methods: {
+    dateToString: function() {
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour12: true,
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+      };
+
+      return this.post.created.toLocaleDateString("en-US", options);
     },
   },
 };
