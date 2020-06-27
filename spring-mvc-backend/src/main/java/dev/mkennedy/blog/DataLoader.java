@@ -95,7 +95,7 @@ public class DataLoader implements CommandLineRunner {
         User sloth = userService.findByUsername("sloth");
         allPosts.addAll(Arrays.asList(
                 new Post("Life of a Sloth", lorumIpsumGenerator(5), sloth),
-                new Post("Haning Out", lorumIpsumGenerator(5), sloth),
+                new Post("Hangin' Out", lorumIpsumGenerator(5), sloth),
                 new Post("Tree Life", lorumIpsumGenerator(5), sloth)
         ));
 
