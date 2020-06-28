@@ -603,7 +603,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Reply'
+                $ref: '#/components/schemas/PageableReplies'
         '404':
           description: Post not found
           content:
