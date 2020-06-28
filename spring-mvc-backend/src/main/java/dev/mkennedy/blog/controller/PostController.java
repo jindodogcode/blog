@@ -74,12 +74,12 @@ public class PostController {
                 required = false
             ) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime after) {
         // check that Post with id exists
-        postService.findById(id);
+        Post post = postService.findById(id);
 
         if (after == null) {
-            return replyService.findAllByPostId(id, page, pageSize);
+            return replyService.findByPost(post, page, pageSize);
         } else {
-            return replyService.findAllByPostIdAndCreatedAfter(id, after, page, pageSize);
+            return replyService.findByPostAndCreatedAfter(post, after, page, pageSize);
         }
     }
 }

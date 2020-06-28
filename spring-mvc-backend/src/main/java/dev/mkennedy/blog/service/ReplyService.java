@@ -4,7 +4,9 @@ import java.time.ZonedDateTime;
 
 import org.springframework.data.domain.Page;
 
+import dev.mkennedy.blog.entity.Post;
 import dev.mkennedy.blog.entity.Reply;
+import dev.mkennedy.blog.entity.User;
 
 public interface ReplyService {
 
@@ -14,11 +16,11 @@ public interface ReplyService {
 
     public Page<Reply> findAllRecent(int page, int pageSize);
 
-    public Page<Reply> findAllByPostId(long id, int page, int pageSize);
+    public Page<Reply> findByPost(Post post, int page, int pageSize);
 
-    public Page<Reply> findAllByPostIdAndCreatedAfter(long id, ZonedDateTime after, int page, int pageSize);
+    public Page<Reply> findByPostAndCreatedAfter(Post post, ZonedDateTime after, int page, int pageSize);
 
-    public Page<Reply> findAllByUsername(String username, int page, int pageSize);
+    public Page<Reply> findByUser(User user, int page, int pageSize);
 
-    public Page<Reply> findAllByReplyId(long id, int page, int pageSize);
+    public Page<Reply> findByReply(Reply reply, int page, int pageSize);
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.mkennedy.blog.entity.Post;
+import dev.mkennedy.blog.entity.User;
 import dev.mkennedy.blog.repository.PostRepository;
 
 @Service
@@ -48,16 +49,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<Post> findAllByUsername(String username, int page, int pageSize) {
+    public Page<Post> findByUser(User user, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.DESC, "created"));
 
-        return postRepo.findAllByUsername(username, pageable);
+        return postRepo.findByUser(user, pageable);
     }
 
     @Override
-    public Page<Post> findByUsernameAndCreatedAfter(String username, ZonedDateTime after, int page, int pageSize) {
+    public Page<Post> findByUserAndCreatedAfter(User user, ZonedDateTime after, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.DESC, "created"));
 
-        return postRepo.findAllByUsernameAndCreatedAfter(username, after, pageable);
+        return postRepo.findByUserAndCreatedAfter(user, after, pageable);
     }
 }

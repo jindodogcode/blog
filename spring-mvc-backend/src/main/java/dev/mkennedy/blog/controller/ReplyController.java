@@ -52,9 +52,8 @@ public class ReplyController {
                 required = false,
                 defaultValue = PagingDefaults.PAGESIZE
             ) int pageSize) {
-        // check that Reply with id exists
-        replyService.findById(id);
+        Reply reply = replyService.findById(id);
 
-        return replyService.findAllByReplyId(id, page, pageSize);
+        return replyService.findByReply(reply, page, pageSize);
     }
 }

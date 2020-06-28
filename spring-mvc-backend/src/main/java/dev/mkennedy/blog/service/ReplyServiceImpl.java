@@ -13,7 +13,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import dev.mkennedy.blog.entity.Post;
 import dev.mkennedy.blog.entity.Reply;
+import dev.mkennedy.blog.entity.User;
 import dev.mkennedy.blog.repository.ReplyRepository;
 
 @Service
@@ -42,30 +44,30 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
-    public Page<Reply> findAllByPostId(long id, int page, int pageSize) {
+    public Page<Reply> findByPost(Post post, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.ASC, "created"));
 
-        return replyRepo.findAllByPostId(id, pageable);
+        return replyRepo.findByPost(post, pageable);
     }
 
     @Override
-    public Page<Reply> findAllByPostIdAndCreatedAfter(long id, ZonedDateTime after, int page, int pageSize) {
+    public Page<Reply> findByPostAndCreatedAfter(Post post, ZonedDateTime after, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.ASC, "created"));
 
-        return replyRepo.findAllByPostIdAndCreatedAfter(id, after, pageable);
+        return replyRepo.findByPostAndCreatedAfter(post, after, pageable);
     }
 
     @Override
-    public Page<Reply> findAllByUsername(String username, int page, int pageSize) {
+    public Page<Reply> findByUser(User user, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.DESC, "created"));
 
-        return replyRepo.findAllByUsername(username, pageable);
+        return replyRepo.findByUser(user, pageable);
     }
 
     @Override
-    public Page<Reply> findAllByReplyId(long id, int page, int pageSize) {
+    public Page<Reply> findByReply(Reply reply, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Direction.DESC, "created"));
 
-        return replyRepo.findAllByReplyId(id, pageable);
+        return replyRepo.findByReply(reply, pageable);
     }
 }

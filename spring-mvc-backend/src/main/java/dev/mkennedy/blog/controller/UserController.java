@@ -102,13 +102,12 @@ public class UserController {
                 value = "after",
                 required = false
             ) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime after) {
-        // check that User with username exists
-        userService.findByUsername(username);
+        User user = userService.findByUsername(username);
         
         if (after == null) {
-            return postService.findAllByUsername(username, page, pageSize);
+            return postService.findByUser(user, page, pageSize);
         } else {
-            return postService.findByUsernameAndCreatedAfter(username, after, page, pageSize);
+            return postService.findByUserAndCreatedAfter(user, after, page, pageSize);
         }
     }
 
@@ -163,9 +162,9 @@ public class UserController {
                 defaultValue = PagingDefaults.PAGESIZE
             ) int pageSize) {
         // check that User with username exists
-        userService.findByUsername(username);
+        User user = userService.findByUsername(username);
 
-        return replyService.findAllByUsername(username, page, pageSize);
+        return replyService.findByUser(user, page, pageSize);
     }
 
     @PatchMapping("/{username}/replies/{id}")
