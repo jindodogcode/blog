@@ -44,7 +44,6 @@ public class PostController {
                 value = "after",
                 required = false
             ) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime after) {
-        System.out.println(after);
         if (after == null) {
             return postService.findAllRecent(page, pageSize);
         } else {
