@@ -28,7 +28,7 @@ public class Reply {
     @Column(name = "id")
     private Long id;
     @Column(name = "content", nullable = false)
-    @Lob @Basic(fetch = FetchType.LAZY)
+    @Lob
     private String content;
     @Column(name = "created", nullable = false)
     private ZonedDateTime created;

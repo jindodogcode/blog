@@ -2,7 +2,6 @@ package dev.mkennedy.blog.entity;
 
 import java.time.ZonedDateTime;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,7 +29,7 @@ public class Post {
     @Column(name = "title", nullable = false)
     private String title;
     @Column(name = "content", nullable = false)
-    @Lob @Basic(fetch = FetchType.LAZY)
+    @Lob
     private String content;
     @Column(name = "created", nullable = false)
     private ZonedDateTime created;
