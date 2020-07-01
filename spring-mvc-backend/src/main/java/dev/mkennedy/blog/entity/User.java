@@ -3,6 +3,7 @@ package dev.mkennedy.blog.entity;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity(name = "Users")
@@ -29,6 +31,8 @@ public class User {
     private String firstName;
     @Column(name = "last_name", nullable = false)
     private String lastName;
+    @Column(name = "about", nullable = false)
+    private String about;
     @Column(name = "created", nullable = false)
     private ZonedDateTime created;
     @Column(name = "last_logged_in", nullable = true)
@@ -64,19 +68,21 @@ public class User {
 
     public User() {}
 
-    public User(String email, String username, String firstName, String lastName) {
+    public User(String email, String username, String firstName, String lastName, String about) {
         this.email = email;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.about = about;
     }
 
     public User(String email,
             String username,
             String firstName,
             String lastName,
+            String about,
             UserSecurity security) {
-        this(email, username, firstName, lastName);
+        this(email, username, firstName, lastName, about);
         this.security = security;
     }
 
@@ -124,6 +130,14 @@ public class User {
 
     public void setLastName(String lastName) {
       this.lastName = lastName;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
     }
 
     public ZonedDateTime getCreated() {
@@ -176,78 +190,75 @@ public class User {
 
     @Override
     public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((created == null) ? 0 : created.hashCode());
-      result = prime * result + ((email == null) ? 0 : email.hashCode());
-      result =
-          prime * result + ((firstName == null) ? 0 : firstName.hashCode());
-      result = prime * result + ((id == null) ? 0 : id.hashCode());
-      result = prime * result
-          + ((lastLoggedIn == null) ? 0 : lastLoggedIn.hashCode());
-      result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
-      result = prime * result + ((security == null) ? 0 : security.hashCode());
-      result = prime * result + ((username == null) ? 0 : username.hashCode());
-      return result;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((about == null) ? 0 : about.hashCode());
+        result = prime * result + ((created == null) ? 0 : created.hashCode());
+        result = prime * result + ((email == null) ? 0 : email.hashCode());
+        result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((lastLoggedIn == null) ? 0 : lastLoggedIn.hashCode());
+        result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
+        result = prime * result + ((username == null) ? 0 : username.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        User other = (User) obj;
+        if (about == null) {
+            if (other.about != null)
+                return false;
+        } else if (!about.equals(other.about))
+            return false;
+        if (created == null) {
+            if (other.created != null)
+                return false;
+        } else if (!created.equals(other.created))
+            return false;
+        if (email == null) {
+            if (other.email != null)
+                return false;
+        } else if (!email.equals(other.email))
+            return false;
+        if (firstName == null) {
+            if (other.firstName != null)
+                return false;
+        } else if (!firstName.equals(other.firstName))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (lastLoggedIn == null) {
+            if (other.lastLoggedIn != null)
+                return false;
+        } else if (!lastLoggedIn.equals(other.lastLoggedIn))
+            return false;
+        if (lastName == null) {
+            if (other.lastName != null)
+                return false;
+        } else if (!lastName.equals(other.lastName))
+            return false;
+        if (username == null) {
+            if (other.username != null)
+                return false;
+        } else if (!username.equals(other.username))
+            return false;
         return true;
-      if (obj == null)
-        return false;
-      if (getClass() != obj.getClass())
-        return false;
-      User other = (User) obj;
-      if (created == null) {
-        if (other.created != null)
-          return false;
-      } else if (!created.equals(other.created))
-        return false;
-      if (email == null) {
-        if (other.email != null)
-          return false;
-      } else if (!email.equals(other.email))
-        return false;
-      if (firstName == null) {
-        if (other.firstName != null)
-          return false;
-      } else if (!firstName.equals(other.firstName))
-        return false;
-      if (id == null) {
-        if (other.id != null)
-          return false;
-      } else if (!id.equals(other.id))
-        return false;
-      if (lastLoggedIn == null) {
-        if (other.lastLoggedIn != null)
-          return false;
-      } else if (!lastLoggedIn.equals(other.lastLoggedIn))
-        return false;
-      if (lastName == null) {
-        if (other.lastName != null)
-          return false;
-      } else if (!lastName.equals(other.lastName))
-        return false;
-      if (security == null) {
-        if (other.security != null)
-          return false;
-      } else if (!security.equals(other.security))
-        return false;
-      if (username == null) {
-        if (other.username != null)
-          return false;
-      } else if (!username.equals(other.username))
-        return false;
-      return true;
     }
 
     @Override
     public String toString() {
-      return "User [created=" + created + ", email=" + email + ", firstName="
-          + firstName + ", id=" + id + ", lastLoggedIn=" + lastLoggedIn
-          + ", lastName=" + lastName + ", username="
-          + username + "]";
+        return "User [about=" + about + ", created=" + created + ", email=" + email + ", firstName=" + firstName
+                + ", id=" + id + ", lastLoggedIn=" + lastLoggedIn + ", lastName=" + lastName + ", username=" + username
+                + "]";
     }
 }

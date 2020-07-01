@@ -26,14 +26,17 @@ public class UpdateUserForm {
         message = "must start with a letter and only contain letters, dashes, and spaces"
     )
     private String lastName;
+    @Size(max = 255)
+    private String about;
 
     public UpdateUserForm() {
     }
 
-    public UpdateUserForm(String email, String firstName, String lastName) {
+    public UpdateUserForm(String email, String firstName, String lastName, String about) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.about = about;
     }
 
     public void updateUser(User user) {
@@ -66,15 +69,22 @@ public class UpdateUserForm {
         this.lastName = lastName;
     }
 
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((about == null) ? 0 : about.hashCode());
         result = prime * result + ((email == null) ? 0 : email.hashCode());
-        result = prime * result
-                + ((firstName == null) ? 0 : firstName.hashCode());
-        result = prime * result
-                + ((lastName == null) ? 0 : lastName.hashCode());
+        result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
+        result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
         return result;
     }
 
@@ -87,6 +97,11 @@ public class UpdateUserForm {
         if (getClass() != obj.getClass())
             return false;
         UpdateUserForm other = (UpdateUserForm) obj;
+        if (about == null) {
+            if (other.about != null)
+                return false;
+        } else if (!about.equals(other.about))
+            return false;
         if (email == null) {
             if (other.email != null)
                 return false;
@@ -107,7 +122,7 @@ public class UpdateUserForm {
 
     @Override
     public String toString() {
-        return "UpdateUserForm [email=" + email + ", firstName=" + firstName
-                + ", lastName=" + lastName + "]";
+        return "UpdateUserForm [about=" + about + ", email=" + email + ", firstName=" + firstName + ", lastName="
+                + lastName + "]";
     }
 }

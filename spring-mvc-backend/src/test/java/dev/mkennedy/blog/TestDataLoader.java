@@ -41,10 +41,10 @@ public class TestDataLoader implements CommandLineRunner {
         log.info("Initializing users");
 
         List<User> users = Arrays.asList(
-            new User("userone@example.com", "userone", "User", "One"),
-            new User("usertwo@example.com", "usertwo", "User", "Two"),
-            new User("deleteuser@example.com", "deleteuser", "Delete", "User"),
-            new User("updateuser@example.com", "updateuser", "Update", "User")
+            new User("userone@example.com", "userone", "User", "One", "First user"),
+            new User("usertwo@example.com", "usertwo", "User", "Two", "Second user"),
+            new User("deleteuser@example.com", "deleteuser", "Delete", "User", "Delete user"),
+            new User("updateuser@example.com", "updateuser", "Update", "User", "Update user")
         );
 
         users.stream().map(user -> userService.saveUserAndSecurity(

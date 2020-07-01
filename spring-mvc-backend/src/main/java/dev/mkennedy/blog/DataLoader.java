@@ -57,10 +57,10 @@ public class DataLoader implements CommandLineRunner {
         log.info("Initializing users");
 
         List<User> users = Arrays.asList(
-                new User("dog@dog.com", "dog", "Dog", "Doggerton"),
-                new User("cat@example.com", "cat", "Cat", "de Catsville"),
-                new User("otter@example.com", "otter", "Otter", "von Otterwitz"),
-                new User("sloth@example.com", "sloth", "Sloth", "Slothington")
+                new User("dog@dog.com", "dog", "Dog", "Doggerton", "A dog"),
+                new User("cat@example.com", "cat", "Cat", "de Catsville", "A cat"),
+                new User("otter@example.com", "otter", "Otter", "von Otterwitz", "An otter"),
+                new User("sloth@example.com", "sloth", "Sloth", "Slothington", "A sloth")
         );
         users.stream()
             .map(user -> userService.saveUserAndSecurity(
@@ -73,21 +73,21 @@ public class DataLoader implements CommandLineRunner {
 
         User dog = userService.findByUsername("dog");
         allPosts.addAll(Arrays.asList(
-                new Post("Life of a Dog", lorumIpsumGenerator(5), dog),
+                new Post("Dog Day Afternoon", lorumIpsumGenerator(5), dog),
                 new Post("Another Day Full of Scratches and Treats", lorumIpsumGenerator(5), dog),
                 new Post("I Chased a Rabbit!!!", lorumIpsumGenerator(5), dog)
         ));
 
         User cat = userService.findByUsername("cat");
         allPosts.addAll(Arrays.asList(
-                new Post("Life of a Cat", lorumIpsumGenerator(5), cat),
+                new Post("Cataphract: A cat focused Strategikon", lorumIpsumGenerator(5), cat),
                 new Post("Yarn is Great!", lorumIpsumGenerator(5), cat),
                 new Post("No Human, No Cry", lorumIpsumGenerator(5), cat)
         ));
 
         User otter = userService.findByUsername("otter");
         allPosts.addAll(Arrays.asList(
-                new Post("Life of an Otter", lorumIpsumGenerator(5), otter),
+                new Post("Ottermas", lorumIpsumGenerator(5), otter),
                 new Post("ON SWIMMING", lorumIpsumGenerator(5), otter),
                 new Post("Zen and the Art of Whisker Maintenance", lorumIpsumGenerator(5), otter)
         ));
