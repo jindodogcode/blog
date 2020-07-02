@@ -740,6 +740,8 @@ components:
           type: string
         lastName:
           type: string
+        about:
+          type: string
         created:
           type: string
           format: date-time
