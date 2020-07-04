@@ -806,10 +806,13 @@ components:
           type: string
         lastName:
           type: string
+        About:
+          type: string
       required:
         - email
         - firstName
         - lastName
+        - about
     Post:
       type: object
       properties:
