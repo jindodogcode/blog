@@ -43,6 +43,7 @@ public class UpdateUserForm {
         user.setEmail(email);
         user.setFirstName(firstName);
         user.setLastName(lastName);
+        user.setAbout(about);
     }
 
     public String getEmail() {
