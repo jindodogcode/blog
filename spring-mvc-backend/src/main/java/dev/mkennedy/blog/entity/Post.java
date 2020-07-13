@@ -16,9 +16,6 @@ import javax.persistence.PrePersist;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
-
 @Entity(name = "Posts")
 public class Post {
 
@@ -75,7 +72,7 @@ public class Post {
     }
 
     public void setTitle(String title) {
-        this.title = Jsoup.clean(title, Whitelist.basic());
+        this.title = title;
     }
 
     public String getContent() {
@@ -83,7 +80,7 @@ public class Post {
     }
 
     public void setContent(String content) {
-        this.content = Jsoup.clean(content, Whitelist.basicWithImages());
+        this.content = content;
     }
 
     public ZonedDateTime getCreated() {

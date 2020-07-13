@@ -2,7 +2,6 @@ package dev.mkennedy.blog.entity;
 
 import java.time.ZonedDateTime;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,9 +15,6 @@ import javax.persistence.PrePersist;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
 
 @Entity(name = "Replies")
 public class Reply {
@@ -97,7 +93,7 @@ public class Reply {
     }
 
     public void setContent(String content) {
-        this.content = Jsoup.clean(content, Whitelist.basicWithImages());
+        this.content = content;
     }
 
     public ZonedDateTime getCreated() {
