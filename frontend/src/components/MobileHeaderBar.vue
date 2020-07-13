@@ -66,7 +66,7 @@ export default {
 
 <style lang="postcss" scoped>
 .menu-open {
-  @apply absolute z-10 top-0 right-0 left-0 p-4 h-screen;
+  @apply absolute z-40 top-0 right-0 left-0 p-4 h-screen;
 }
 
 .nav-bar {

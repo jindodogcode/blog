@@ -22,6 +22,14 @@
   @apply border-orange-400;
 }
 
+.form-row textarea {
+  @apply px-2 py-1 border rounded;
+}
+
+.form-row textarea:focus {
+  @apply border-orange-400;
+}
+
 .form input[type="submit"] {
   @apply p-2 mt-2 border rounded;
 }

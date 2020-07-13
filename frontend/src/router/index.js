@@ -2,9 +2,12 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import store from "@/store";
 import Home from "@/views/Home.vue";
+import Error from "@/views/Error.vue";
 import Registration from "@/views/Registration.vue";
 import UserProfile from "@/views/UserProfile.vue";
 import NewPost from "@/views/NewPost.vue";
+import { UserNotFoundError } from "@/errors";
+import { postsDefaults, userPostsDefaults } from "@/defaults";
 
 Vue.use(VueRouter);
 
@@ -14,10 +17,26 @@ const routes = [
     name: "Home",
     component: Home,
     beforeEnter: async function(_to, _from, next) {
-      const lastFetch = store.getters.lastFetch;
-      await store.dispatch("fetchPosts", { after: lastFetch });
+      try {
+        const lastFetch = store.getters.lastFetch;
+        await store.dispatch("fetchPosts", {
+          after: lastFetch,
+          pagesize: postsDefaults.pagesize,
+        });
+        Object.values(store.getters.posts).forEach(post =>
+          store.dispatch("fetchPostReplies", { postId: post.id }),
+        );
+      } catch (err) {
+        console.log(err);
+      }
       next();
     },
+  },
+  {
+    path: "/error",
+    name: "Error",
+    component: Error,
+    props: true,
   },
   {
     path: "/register",
@@ -31,11 +50,24 @@ const routes = [
     props: true,
     beforeEnter: async function(to, _from, next) {
       const username = to.params.username;
-      await Promise.all([
-        store.dispatch("fetchUser", username),
-        store.dispatch("fetchUserPosts", { username }),
-      ]);
-      next();
+      try {
+        await store.dispatch("fetchUser", username);
+        await store.dispatch("fetchUserPosts", {
+          username,
+          options: { pagesize: userPostsDefaults.pagesize },
+        });
+        const user = store.getters.userByUsername(username);
+        Object.keys(user.posts).forEach(post =>
+          store.dispatch("fetchPostReplies", { postId: post }),
+        );
+        next();
+      } catch (err) {
+        console.log(err);
+        if (err instanceof UserNotFoundError) {
+          store.dispatch("addPageError", err);
+        }
+        next();
+      }
     },
   },
   {
@@ -69,6 +101,7 @@ const router = new VueRouter({
 
 router.beforeEach((_to, _from, next) => {
   store.dispatch("resetUI");
+  store.dispatch("clearErrors");
   next();
 });
 

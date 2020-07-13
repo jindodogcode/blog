@@ -1,5 +1,6 @@
 <template>
   <div class="p-4">
+    <div class="mb-2 text-center text-red-400">{{ error }}</div>
     <h4 class="form-title">Login</h4>
     <form @submit.prevent="handleSubmit" class="form login-form">
       <div class="form-row">
@@ -24,6 +25,8 @@
 </template>
 
 <script>
+import { UnauthorizedError } from "@/errors";
+
 export default {
   name: "LoginForm",
   data: function() {
@@ -32,17 +35,24 @@ export default {
         username: "",
         password: "",
       },
+      error: "",
     };
   },
   methods: {
     handleSubmit: async function() {
-      await this.$store.dispatch("login", this.loginForm);
-      this.$store.dispatch("setLoginFormOpen", false);
-      this.$router.push("/");
+      try {
+        await this.$store.dispatch("login", this.loginForm);
+        this.$store.dispatch("setLoginFormOpen", false);
+        this.$router.push("/");
+      } catch (err) {
+        if (err instanceof UnauthorizedError) {
+          this.error = err.message;
+        }
+      }
     },
   },
   mounted: function() {
-    document.querySelector(".form > .form-row:first-child input").focus();
+    document.querySelector(".form > .form-row:first-of-type input").focus();
   },
 };
 </script>

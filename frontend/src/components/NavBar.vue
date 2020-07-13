@@ -16,6 +16,11 @@
       }"
       >Post</router-link
     >
+    <router-link
+      v-if="principal.loggedIn"
+      :to="{ name: 'UserProfile', params: { username: principal.username } }"
+      >Account</router-link
+    >
     <button v-if="principal.loggedIn" @click="handleLogoutClick">Logout</button>
   </nav>
 </template>

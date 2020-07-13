@@ -5,7 +5,7 @@
       v-for="(post, id) in posts"
       :key="id"
       :post="post"
-      class="max-w-lg mx-auto mb-4"
+      class="mx-auto mb-4 max-w-screen-md"
     />
   </section>
 </template>

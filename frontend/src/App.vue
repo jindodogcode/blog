@@ -2,8 +2,13 @@
   <div id="app" class="relative z-0 p-4 mx-auto max-w-screen-lg">
     <header-bar v-if="ui.largeScreen" />
     <mobile-header-bar v-else />
-    <main class="relative px-4 mx-auto max-w-screen-lg">
-      <router-view class="mt-8" />
+    <main class="relative px-4 mx-auto mt-8 max-w-screen-lg">
+      <errors
+        v-if="errors.pageErrors.length > 0"
+        :errors="errors.pageErrors"
+        class="text-center"
+      />
+      <router-view v-else />
     </main>
   </div>
 </template>
@@ -12,15 +17,17 @@
 import { mapGetters } from "vuex";
 import HeaderBar from "@/components/HeaderBar.vue";
 import MobileHeaderBar from "@/components/MobileHeaderBar.vue";
+import Errors from "@/components/Errors.vue";
 
 export default {
   name: "App",
   components: {
     HeaderBar,
     MobileHeaderBar,
+    Errors,
   },
   computed: {
-    ...mapGetters(["ui"]),
+    ...mapGetters(["ui", "errors"]),
   },
   methods: {
     handleResize: function() {

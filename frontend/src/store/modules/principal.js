@@ -1,38 +1,56 @@
 import BlogClient from "@/client";
+import { UnauthorizedError } from "@/errors.js";
 
 const state = {
   username: "",
   email: "",
   firstName: "",
   lastName: "",
-  posts: new BlogClient.pages.PageablePosts(),
-  replies: new BlogClient.pages.PageableReplies(),
+  about: "",
   loggedIn: false,
 };
 
 const mutations = {
-  UPDATE_PRINCIPAL(state, payload) {
+  /**
+   * Set principal state
+   *
+   * @param {Object} state
+   * @param {Object} payload
+   * @param {String} payload.username
+   * @param {String} payload.email
+   * @param {String} payload.firstName
+   * @param {String} payload.lastName
+   * @param {String} payload.about
+   */
+  SET_PRINCIPAL(state, payload) {
     state.username = payload.username;
     state.email = payload.email;
     state.firstName = payload.firstName;
     state.lastName = payload.lastName;
+    state.about = payload.about;
   },
-  UPDATE_POSTS(state, payload) {
-    state.posts = payload;
-  },
-  UPDATE_REPLIES(state, payload) {
-    state.replies = payload;
-  },
-  UPDATE_LOGGED_IN(state, payload) {
+
+  /**
+   * Set principal logged in status
+   *
+   * @param {Object} state
+   * @param {Boolean} payload
+   */
+  SET_LOGGED_IN(state, payload) {
     state.loggedIn = payload;
   },
+
+  /**
+   * Reset principal state
+   *
+   * @param {Object} state
+   */
   CLEAR_PRINCIPAL(state) {
     state.username = "";
     state.email = "";
     state.firstName = "";
     state.lastName = "";
-    state.posts = new BlogClient.pages.PageablePosts();
-    state.replies = new BlogClient.pages.PageableReplies();
+    state.about = "";
     state.loggedIn = false;
   },
 };
@@ -41,7 +59,8 @@ const actions = {
   /**
    * login
    *
-   * @param {Function} commit
+   * @param {Object} context
+   * @param {Function} context.commit
    * @param {Object} userCredentials
    * @param {String} userCredentials.username
    * @param {String} userCredentials.password
@@ -52,32 +71,40 @@ const actions = {
     )}`;
     try {
       const user = await BlogClient.defaultApi.login(loginStr);
-      commit("UPDATE_PRINCIPAL", user);
-      commit("UPDATE_LOGGED_IN", true);
+      commit("SET_PRINCIPAL", user);
+      commit("SET_LOGGED_IN", true);
     } catch (err) {
-      console.log(err);
+      if (err.response.unauthorized) {
+        throw new UnauthorizedError();
+      } else {
+        console.log(err);
+      }
     }
   },
 
   /**
    * me
    *
-   * @param {Function} commit
+   * @param {Object} context
+   * @param {Function} context.commit
    */
   async me({ commit }) {
     try {
       const user = await BlogClient.defaultApi.me();
-      commit("UPDATE_PRINCIPAL", user);
-      commit("UPDATE_LOGGED_IN", true);
+      commit("SET_PRINCIPAL", user);
+      commit("SET_LOGGED_IN", true);
     } catch (err) {
-      console.log(err);
+      if (!err.response.unauthorized) {
+        console.log(err);
+      }
     }
   },
 
   /**
    * logout
    *
-   * @param {Function} commit
+   * @param {Object} context
+   * @param {Function} context.commit
    */
   async logout({ commit }) {
     try {
@@ -89,42 +116,25 @@ const actions = {
   },
 
   /**
-   * load principal's posts
+   * update principal information
    *
    * @param {Object} context
-   * @param {Object} pageParams Optional paging parameters
-   * @param {Number} pageParams.page page number
-   * @param {Number} pageParams.pagesize number of items per page
+   * @param {Function} context.commit
+   * @param {Object} payload
+   * @param {String} payload.username
+   * @param {Object} payload.updateForm
+   * @param {String} payload.updateForm.email
+   * @param {String} payload.updateForm.firstName
+   * @param {String} payload.updateForm.lastName
+   * @param {String} payload.updateForm.about
    */
-  async fetchPrincipalPosts(context, pageParams) {
+  async updatePrincipal(context, payload) {
     try {
-      const username = context.state.username;
-      const pageablePosts = await BlogClient.userApi.getUserPosts(
-        username,
-        pageParams,
-      );
-      context.commit("UPDATE_POSTS", pageablePosts);
-    } catch (err) {
-      console.log(err);
-    }
-  },
-
-  /**
-   * load principal's replies
-   *
-   * @param {Object} context
-   * @param {Object} pageParams Optional paging parameters
-   * @param {Number} pageParams.page page number
-   * @param {Number} pageParams.pagesize number of items per page
-   */
-  async fetchPrincipalReplies(context, pageParams) {
-    try {
-      const username = context.state.username;
-      const pageableReplies = await BlogClient.userApi.getUserReplies(
-        username,
-        pageParams,
-      );
-      context.commit("UPDATE_REPLIES", pageableReplies);
+      await BlogClient.userApi.updateUser(payload.username, payload.updateForm);
+      await Promise.all([
+        context.dispatch("fetchUser", payload.username),
+        context.dispatch("me"),
+      ]);
     } catch (err) {
       console.log(err);
     }

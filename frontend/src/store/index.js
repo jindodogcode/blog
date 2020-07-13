@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import ui from "./modules/ui";
+import errors from "./modules/errors";
 import principal from "./modules/principal";
 import users from "./modules/users";
 import posts from "./modules/posts";
@@ -14,6 +15,7 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     ui,
+    errors,
     principal,
     users,
     posts,

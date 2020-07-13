@@ -10,7 +10,7 @@
           v-model="newPost.content"
           spellcheck="true"
           rows="10"
-          class="w-full border resize-none"
+          class="w-full p-4 border resize-none"
         />
       </div>
       <input type="submit" value="Post" />
@@ -41,8 +41,14 @@ export default {
         this.principal.username,
         this.newPost,
       );
-      this.$router.push(`/${this.principal.username}`);
+      this.$router.push({
+        name: "UserProfile",
+        params: { username: this.principal.username },
+      });
     },
+  },
+  mounted: function() {
+    document.querySelector(".form > .form-row:first-of-type input").focus();
   },
 };
 </script>
