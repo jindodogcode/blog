@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'dev.mkennedy'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.2'
 sourceCompatibility = '11'
 
 def springProfile = 'dev'
@@ -19,10 +19,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'org.jsoup:jsoup:1.13.1'
     runtimeOnly 'org.postgresql:postgresql:42.2.12'
+    runtimeOnly project(":frontend")
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
