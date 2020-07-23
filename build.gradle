@@ -1,0 +1,6 @@
+task('build-all') {
+    dependsOn(":spring-mvc-backend:bootJar")
+    group = 'Build'
+    description = "Assemble the probject into an executable jar file."
+}
+

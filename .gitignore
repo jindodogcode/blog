@@ -1,3 +1,13 @@
+### Code ###
+!**/src/**
+
+### Gradle Files ###
+.gradle/
+bin/
+build/
+.settings/
+.project
+
 ### Config Files ###
 .npmignore
 .js-gen-config.json

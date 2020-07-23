@@ -1,0 +1,47 @@
+plugins {
+    id "base"
+    id "com.github.node-gradle.node" version "2.2.4"
+}
+
+node {
+    download = false
+    // doesn't have an effect unless download set to true
+    version = "12.16.3"
+}
+
+npm_run_build {
+    inputs.file("package.json")
+    inputs.file("package-lock.json")
+    inputs.dir("src")
+    outputs.dir("build")
+}
+
+task packageVueApp(type: Zip) {
+    dependsOn("npm_run_build")
+    archiveBaseName = "blog-frontend"
+    archiveExtension = "jar"
+    destinationDirectory = file("${projectDir}/build/archive")
+    from("dist") {
+        into("static")
+    }
+}
+
+configurations {
+    npmResources
+}
+
+configurations.default.extendsFrom(configurations.npmResources)
+
+artifacts {
+    npmResources(packageVueApp.archivePath) {
+        builtBy packageVueApp
+        type "jar"
+    }
+}
+
+assemble.dependsOn("packageVueApp")
+
+clean {
+    delete("${projectDir}/dist")
+    delete packageVueApp.archivePath
+}

@@ -94,6 +94,9 @@ const actions = {
       commit("SET_PRINCIPAL", user);
       commit("SET_LOGGED_IN", true);
     } catch (err) {
+      if (!err.response) {
+        console.log(err);
+      }
       if (!err.response.unauthorized) {
         console.log(err);
       }

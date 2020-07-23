@@ -1,0 +1,4 @@
+rootProject.name = 'spring-mvc-blog-project'
+
+include 'spring-mvc-backend'
+include 'frontend'
