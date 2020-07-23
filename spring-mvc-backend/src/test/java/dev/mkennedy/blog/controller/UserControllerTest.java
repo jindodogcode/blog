@@ -59,6 +59,7 @@ public class UserControllerTest {
         userForm.setFirstName("Test");
         userForm.setLastName("User");
         userForm.setPassword("testpassword");
+        userForm.setAbout("");
         URI uri = URI.create(base.toString() + "/users");
         RequestEntity<NewUserForm> request = RequestEntity.post(uri)
             .contentType(MediaType.APPLICATION_JSON)
@@ -84,6 +85,7 @@ public class UserControllerTest {
         userForm.setUsername("tu");
         userForm.setFirstName("<script>code</script>");
         userForm.setPassword("pass");
+        userForm.setAbout("");
         URI uri = URI.create(base.toString() + "/users");
         RequestEntity<NewUserForm> request = RequestEntity.post(uri)
             .contentType(MediaType.APPLICATION_JSON)
@@ -173,6 +175,7 @@ public class UserControllerTest {
         userForm.setEmail("updated@example.com");
         userForm.setFirstName("Updated");
         userForm.setLastName("User");
+        userForm.setAbout("");
         URI uri = URI.create(base.toString() + "/users/updateuser");
         RequestEntity<UpdateUserForm> request = RequestEntity.patch(uri)
             .contentType(MediaType.APPLICATION_JSON)
@@ -354,28 +357,6 @@ public class UserControllerTest {
     }
 
     @Test
-    void addUserPostSanitizationTest() throws Exception {
-        NewPostForm postForm = new NewPostForm();
-        postForm.setTitle("<strong>title</strong>");
-        postForm.setContent("<script>Some scary stuff</script><span>Content</span>");
-        URI uri = URI.create(base.toString() + "/users/usertwo/posts");
-        RequestEntity<NewPostForm> request = RequestEntity.post(uri)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(postForm);
-
-        ResponseEntity<Post> response = template.withBasicAuth("usertwo", "password")
-            .exchange(request, Post.class);
-
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
-        logResponse(response, methodName);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        Post body = response.getBody();
-        assertThat(body.getTitle()).isEqualTo("<strong>title</strong>");
-        assertThat(body.getContent()).isEqualTo("<span>Content</span>");
-    }
-
-    @Test
     void getUserPostsSuccess() throws Exception {
         URI uri = URI.create(base.toString() + "/users/userone/posts");
         RequestEntity<Void> request = RequestEntity.get(uri).build();
@@ -443,26 +424,6 @@ public class UserControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         ApiError body = response.getBody();
         assertThat(body.getMessage()).isEqualTo("Validation error");
-    }
-
-    @Test
-    void updateUserPostSanizationTest() throws Exception {
-        UpdatePostForm postForm = new UpdatePostForm();
-        postForm.setTitle("<strong>Updated Title</strong>");
-        postForm.setContent("<script>evil code</script><em>Updated content.</em>");
-        URI uri = URI.create(base.toString() + "/users/userone/posts/1");
-        RequestEntity<UpdatePostForm> request = RequestEntity.patch(uri).body(postForm);
-
-        ResponseEntity<Post> response = template.withBasicAuth("userone", "password")
-            .exchange(request, Post.class);
-
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
-        logResponse(response, methodName);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Post body = response.getBody();
-        assertThat(body.getTitle()).isEqualTo("<strong>Updated Title</strong>");
-        assertThat(body.getContent()).isEqualTo("<em>Updated content.</em>");
     }
 
     @Test
@@ -655,24 +616,6 @@ public class UserControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         ApiError body = response.getBody();
         assertThat(body.getMessage()).isEqualTo("Validation error");
-    }
-
-    @Test
-    void updateUserReplySanitizationTest() throws Exception {
-        UpdateReplyForm replyForm = new UpdateReplyForm();
-        replyForm.setContent("<script>nasty stuff</script><li>Updated content.</li>");
-        URI uri = URI.create(base.toString() + "/users/usertwo/replies/3");
-        RequestEntity<UpdateReplyForm> request = RequestEntity.patch(uri).body(replyForm);
-
-        ResponseEntity<Reply> response = template.withBasicAuth("usertwo", "password")
-            .exchange(request, Reply.class);
-
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
-        logResponse(response, methodName);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Reply body = response.getBody();
-        assertThat(body.getContent()).isEqualTo("<li>Updated content.</li>");
     }
 
     private void logResponse(ResponseEntity<?> response, String methodName) throws Exception {
