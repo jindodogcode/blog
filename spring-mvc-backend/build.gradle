@@ -7,6 +7,7 @@ plugins {
 group = 'dev.mkennedy'
 version = '0.0.2'
 sourceCompatibility = '11'
+targetCompatibility = '11'
 
 def springProfile = 'dev'
 
@@ -33,6 +34,26 @@ bootRun {
     bootRun.systemProperty 'spring.profiles.active', "${springProfile}"
 }
 
+bootJar {
+    archiveFileName = 'blog-server.jar'
+}
+
 test {
 	useJUnitPlatform()
+}
+
+task unpackJar(type: Copy) {
+    from zipTree("$buildDir/libs/blog-server.jar")
+    into "$buildDir/dependency"
+}
+
+bootJar.mustRunAfter clean
+unpackJar.mustRunAfter bootJar
+
+task buildForDocker {
+    dependsOn("clean")
+    dependsOn("bootJar")
+    dependsOn("unpackJar")
+    group = "Build"
+    description = "Builds artifacts for docker image"
 }
