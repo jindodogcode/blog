@@ -1,6 +1,6 @@
 plugins {
     id "base"
-    id "com.github.node-gradle.node" version "2.2.4"
+    id "com.moowork.node" version "1.3.1"
 }
 
 node {
@@ -17,6 +17,7 @@ npm_run_build {
 }
 
 task packageVueApp(type: Zip) {
+    dependsOn("clean")
     dependsOn("npm_run_build")
     archiveBaseName = "blog-frontend"
     archiveExtension = "jar"
@@ -24,6 +25,8 @@ task packageVueApp(type: Zip) {
     from("dist") {
         into("static")
     }
+    group = "Build"
+    description = "Builds app and packages the output in a jar file"
 }
 
 configurations {
@@ -45,3 +48,5 @@ clean {
     delete("${projectDir}/dist")
     delete packageVueApp.archivePath
 }
+
+npm_run_build.mustRunAfter clean
