@@ -1,6 +1,11 @@
 <template>
   <div :class="{ 'menu-open': ui.mobile.burgerOpen }" class="bg-white">
     <header class="header">
+      <div>
+        <router-link to="/">
+          <img src="@/assets/b-logo-128.png" alt="Blog Logo" />
+        </router-link>
+      </div>
       <burger @click="handleBurgerClick()" />
     </header>
     <component

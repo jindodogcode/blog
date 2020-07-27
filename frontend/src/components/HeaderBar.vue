@@ -1,6 +1,11 @@
 <template>
   <div>
     <header class="header">
+      <div>
+        <router-link to="/"
+          ><img src="@/assets/b-logo-128.png" alt="Blog Logo"
+        /></router-link>
+      </div>
       <nav-bar />
     </header>
     <div class="relative">

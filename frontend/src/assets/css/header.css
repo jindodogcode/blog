@@ -1,10 +1,9 @@
 .header {
-  @apply flex justify-end p-4;
+  @apply flex justify-between p-4;
 }
 
-.header a,
-.header button {
-  @apply mx-4 font-bold text-gray-800;
+.header img {
+  @apply w-8 h-8;
 }
 
 .header a:hover,
