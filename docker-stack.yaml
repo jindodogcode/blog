@@ -19,5 +19,6 @@ services:
       - db
     environment:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://db:5432/blog"
-      SPRING_DATASOURCE_USERNAME: "blog_admin"
-      SPRING_DATASOURCE_PASSWORD: "something"
+      SPRING_DATASOURCE_USERNAME: blog_admin
+      SPRING_DATASOURCE_PASSWORD: something
+      SPRING_PROFILES_ACTIVE: data,prod
