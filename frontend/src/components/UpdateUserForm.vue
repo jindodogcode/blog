@@ -27,10 +27,16 @@
         id="about"
         v-model="userForm.about"
         spellcheck="true"
-        rows="6"
+        rows="4"
         maxlength="255"
         class="w-full resize-none"
       />
+    </div>
+    <div
+      :class="{ 'text-red-600': aboutCharsRemaining < 1 }"
+      class="text-right"
+    >
+      {{ aboutCharsRemaining }}
     </div>
     <div class="text-center">
       <input type="submit" value="Update" />
@@ -55,6 +61,9 @@ export default {
   },
   computed: {
     ...mapGetters(["principal"]),
+    aboutCharsRemaining: function() {
+      return 255 - this.userForm.about.length;
+    },
   },
   methods: {
     handleUserUpdateFormSubmit: async function() {
@@ -88,8 +97,7 @@ export default {
 
 @media (min-width: 1024px) {
   .user-update-form-row label {
-    @apply block text-right mb-0 mr-4;
+    @apply mb-0 mr-4;
   }
 }
 </style>
-
