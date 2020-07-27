@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -20,16 +21,19 @@ import dev.mkennedy.blog.entity.Reply;
 import dev.mkennedy.blog.entity.User;
 import dev.mkennedy.blog.entity.UserSecurity;
 import dev.mkennedy.blog.entity.UserSecurity.Role;
+import dev.mkennedy.blog.repository.UserRepository;
 import dev.mkennedy.blog.service.PostService;
 import dev.mkennedy.blog.service.ReplyService;
 import dev.mkennedy.blog.service.UserService;
 
 @Component
-@Profile({ "dev" })
+@Profile("data")
 public class DataLoader implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DataLoader.class);
 
+    @Autowired
+    private UserRepository userRepo;
     @Autowired
     private UserService userService;
     @Autowired
@@ -54,6 +58,18 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        List<Optional<User>> isData = Arrays.asList(
+                userRepo.findByUsername("dog"),
+                userRepo.findByUsername("cat"),
+                userRepo.findByUsername("otter"),
+                userRepo.findByUsername("sloth")
+        );
+
+        // if already data, then stop
+        if (isData.stream().anyMatch(opt -> opt.isPresent())) {
+            return;
+        }
+
         log.info("Initializing users");
 
         List<User> users = Arrays.asList(
@@ -103,7 +119,7 @@ public class DataLoader implements CommandLineRunner {
 
         User sloth = userService.findByUsername("sloth");
         allPosts.addAll(Arrays.asList(
-                new Post("Life of a Sloth", lorumIpsumGenerator(5), sloth),
+                new Post("I, Clawdius", lorumIpsumGenerator(5), sloth),
                 new Post("Hangin' Out", lorumIpsumGenerator(5), sloth),
                 new Post("Tree Life", lorumIpsumGenerator(5), sloth),
                 new Post("On the Pre-Slothcratics", lorumIpsumGenerator(5), sloth),

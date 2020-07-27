@@ -1,0 +1,31 @@
+spring:
+  profiles: dev
+  name: development-YAML
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/blog"
+    username: blog_admin
+    password: something
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          servlet:
+            DispatcherServlet: DEBUG
+
+---
+spring:
+  profiles: prod
+  name: production-YAML
+  datasoruce:
+    url: "jdbc:postgresql://localhost:5432/blog"
+    username: blog_admin
+    password: something
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
