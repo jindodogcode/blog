@@ -11,7 +11,7 @@
       />
     </popup-container>
     <div class="user-profile">
-      <div class="mx-auto max-w-screen-md">
+      <div class="p-4 mx-auto mb-4 border border-black max-w-screen-md">
         <div class="flex">
           <h3 class="mr-4 text-2xl font-bold">{{ user.username }}</h3>
           <button
@@ -119,7 +119,6 @@ export default {
           };
 
           try {
-            console.log("in try");
             const posts = await this.$store.dispatch("fetchUserPosts", request);
             const replies = [];
             posts.forEach(post =>
