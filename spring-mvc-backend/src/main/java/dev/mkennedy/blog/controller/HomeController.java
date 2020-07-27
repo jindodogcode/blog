@@ -20,10 +20,6 @@ public class HomeController {
 
     @GetMapping("/api/v1/login")
     public User login(Authentication authentication) {
-        // System.out.println(authentication);
-        // if (authentication == null) {
-        //     throw new UnauthorizedException();
-        // }
         User user = userRepo.findByUsername(authentication.getName())
             .orElseThrow(() -> new UsernameNotFoundException(
                 "username: " + authentication.getName() + " not found"));
