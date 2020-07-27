@@ -1,8 +1,8 @@
 <template>
-  <div id="app" class="relative z-0 p-4 mx-auto max-w-screen-lg">
+  <div id="app" class="relative z-0 p-4 mx-auto max-w-screen-md">
     <header-bar v-if="ui.largeScreen" />
     <mobile-header-bar v-else />
-    <main class="relative px-4 mx-auto mt-8 max-w-screen-lg">
+    <main class="relative px-4 mx-auto mt-8">
       <errors
         v-if="errors.pageErrors.length > 0"
         :errors="errors.pageErrors"
