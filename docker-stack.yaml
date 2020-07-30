@@ -9,10 +9,10 @@ services:
       POSTGRES_PASSWORD: something
       POSTGRES_DB: blog
     volumes:
-      - ./.data/pgdata:/var/lib/postgresql/data
+      - /opt/docker-data/blog/main:/var/lib/postgresql/data
 
   server:
-    image: jindodog/blog-server
+    image: jindodog/blog-server:latest
     ports:
       - "8080:8080"
     depends_on:
