@@ -5,19 +5,13 @@
 .gradle/
 bin/
 build/
-.settings/
-.project
-
-### Config Files ###
-.npmignore
-.js-gen-config.json
+.gradle
 
 ### Generated Client Code ###
 js-client/
 
-### Database files ###
-.data/
-
 ### Editors ###
 .vim/
 .metals/
+.settings/
+.project
