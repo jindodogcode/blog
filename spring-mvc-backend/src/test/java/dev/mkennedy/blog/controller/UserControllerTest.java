@@ -1,5 +1,12 @@
 package dev.mkennedy.blog.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.net.URI;
+import java.net.URL;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -15,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+
 import dev.mkennedy.blog.PageableResponse;
 import dev.mkennedy.blog.entity.Post;
 import dev.mkennedy.blog.entity.Reply;
@@ -26,10 +34,6 @@ import dev.mkennedy.blog.model.NewUserForm;
 import dev.mkennedy.blog.model.UpdatePostForm;
 import dev.mkennedy.blog.model.UpdateReplyForm;
 import dev.mkennedy.blog.model.UpdateUserForm;
-import java.net.URI;
-import java.net.URL;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({ "usertest", "test" })
@@ -124,6 +128,7 @@ public class UserControllerTest {
     void addUserNoRequestBody() throws Exception {
         URI uri = URI.create(base.toString() + "/users");
         RequestEntity<?> request = RequestEntity.post(uri)
+            .contentType(MediaType.APPLICATION_JSON)
             .body(null);
 
         ResponseEntity<ApiError> response = template.exchange(request, ApiError.class);
@@ -311,8 +316,8 @@ public class UserControllerTest {
 
         ResponseEntity<?> response = template.exchange(request, Object.class);
 
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
-        logResponse(response, methodName);
+        // String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        // logResponse(response, methodName);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
