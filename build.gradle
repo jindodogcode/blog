@@ -1,6 +1,22 @@
-task('build-all') {
-    dependsOn(":spring-mvc-backend:bootJar")
-    group = 'Build'
-    description = "Assemble the probject into an executable jar file."
+plugins {
+	id 'org.springframework.boot' version '2.3.0.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'com.moowork.node' version '1.3.1'
 }
 
+subprojects {
+    if (name.equals("spring-mvc-backend")) {
+        apply plugin: 'org.springframework.boot'
+        apply plugin: 'io.spring.dependency-management'
+        apply plugin: 'java'
+    }
+    if (name.equals("frontend")) {
+        apply plugin: 'com.moowork.node'
+        apply plugin: 'base'
+    }
+}
+
+tasks.wrapper {
+  distributionType = Wrapper.DistributionType.ALL
+  gradleVersion = "6.3"
+}

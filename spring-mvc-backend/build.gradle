@@ -1,15 +1,7 @@
-plugins {
-	id 'org.springframework.boot' version '2.3.0.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-	id 'java'
-}
-
 group = 'dev.mkennedy'
 version = '0.0.2'
 sourceCompatibility = '11'
 targetCompatibility = '11'
-
-def springProfile = 'dev'
 
 repositories {
 	mavenCentral()
@@ -28,10 +20,15 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.apache.httpcomponents:httpclient:4.5.12'
 }
 
 bootRun {
-    bootRun.systemProperty 'spring.profiles.active', "${springProfile}"
+    if (project.hasProperty("springProfile")) {
+        bootRun.systemProperty 'spring.profiles.active', "${springProfile}"
+    } else {
+        bootRun.systemProperty 'spring.profiles.active', 'data,dev'
+    }
 }
 
 bootJar {
@@ -47,11 +44,13 @@ task unpackJar(type: Copy) {
     into "$buildDir/dependency"
 }
 
-bootJar.mustRunAfter clean
-unpackJar.mustRunAfter bootJar
-
 task buildForDocker {
+    bootJar.mustRunAfter clean
+    unpackJar.mustRunAfter bootJar
+    test.mustRunAfter clean
+
     dependsOn("clean")
+    dependsOn("test")
     dependsOn("bootJar")
     dependsOn("unpackJar")
     group = "Build"
