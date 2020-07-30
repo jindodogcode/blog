@@ -1,4 +1,4 @@
-rootProject.name = 'spring-mvc-blog-project'
+rootProject.name = 'blog'
 
 include 'spring-mvc-backend'
 include 'frontend'
