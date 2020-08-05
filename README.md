@@ -4,7 +4,7 @@
 
 - [About](#about)
 - [Technologies](#technologies)
-- [Install](#install)
+- [Setup](#setup)
 - [Todo](#todo)
 
 ## About
@@ -23,10 +23,34 @@ A project to practice using Spring with an SPA frontend.
 - Docker 19.03.8
 - PostgreSQL 12.3
 
-## Install
+## Setup
 
 ### With Docker
 
+#### Docker Compose
+
+```bash
+git pull https://github.com/jindodogcode/blog.git
+cd blog
+docker-compose up -d
+```
+
+Enter `127.0.0.1:8080` into your browser.
+
+#### Docker Swarm
+
+```bash
+git pull https://github.com/jindodogcode/blog.git
+cd blog
+docker stack deploy -c docker-stack.yml blog
+```
+
+Enter `127.0.0.1:8080` into your browser.
+
 ### Without Docker
 
+TODO
+
 ## Todo
+
+TODO
