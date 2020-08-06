@@ -5,11 +5,22 @@
 - [About](#about)
 - [Technologies](#technologies)
 - [Setup](#setup)
+- [API Docs](#api-docs)
 - [Todo](#todo)
 
 ## About
 
-A project to practice using Spring with an SPA frontend.
+A simple blog application. Made for practice and retain what I learned from
+reading Beggining Spring 5. The general design goals of the application are:
+
+- crud application
+- rest api
+- SPA frontend
+- document api with openapi
+- paging
+- deploy application using docker
+
+Eventually, I intend to rewrite the backend using Spring WebFlux and / or Vertx.
 
 ## Technologies
 
@@ -18,6 +29,7 @@ A project to practice using Spring with an SPA frontend.
 - Spring Boot 2.3
 - Node 12.16.3
 - Vue 2.6.11
+- TailwindCSS 1.4.6
 - OpenAPI 3.0.0
 - OpenAPI Generator CLI 4.3.1
 - Docker 19.03.8
@@ -45,12 +57,21 @@ cd blog
 docker stack deploy -c docker-stack.yml blog
 ```
 
-Enter `127.0.0.1:8080` into your browser.
+Wait a minute while Docker pulls the images then enter `127.0.0.1:8080` into
+your browser.
 
 ### Without Docker
 
 TODO
 
+## API Docs
+
+[API Docs](./docs/api/index.html)
+
 ## Todo
 
-TODO
+- better post creation form
+- store posts and replies as html
+- user avatar images
+- beautify
+- add search functionality
