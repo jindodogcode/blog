@@ -66,7 +66,7 @@ TODO
 
 ## API Docs
 
-[API Docs](./docs/api/index.html)
+[API Docs](./docs/api/README.md)
 
 ## Todo
 
