@@ -13,8 +13,8 @@
 A simple blog application. Made for practice and retain what I learned from
 reading Beggining Spring 5. The general design goals of the application are:
 
-- crud application
-- rest api
+- CRUD application
+- REST API
 - SPA frontend
 - document api with openapi
 - paging
